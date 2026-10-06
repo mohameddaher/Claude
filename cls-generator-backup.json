@@ -1,0 +1,787 @@
+{
+  "fuel": [
+    {
+      "barrels": 40,
+      "notes": "",
+      "order": "2026-01-11",
+      "received": "2026-01-12",
+      "small1": "2026-01-24",
+      "small2": "2026-02-07",
+      "id": "c01"
+    },
+    {
+      "barrels": 40,
+      "notes": "",
+      "order": "2026-02-07",
+      "received": "2026-02-08",
+      "small1": "2026-02-20",
+      "small2": "2026-03-06",
+      "id": "c02"
+    },
+    {
+      "barrels": 40,
+      "notes": "",
+      "order": "2026-03-06",
+      "received": "2026-03-07",
+      "small1": "2026-03-18",
+      "small2": "2026-03-31",
+      "id": "c03"
+    },
+    {
+      "barrels": 40,
+      "notes": "",
+      "order": "2026-03-31",
+      "received": "2026-03-31",
+      "small1": "2026-04-11",
+      "small2": "2026-04-25",
+      "id": "c04"
+    },
+    {
+      "barrels": 40,
+      "notes": "",
+      "order": "2026-04-25",
+      "received": "2026-04-26",
+      "small1": "2026-05-08",
+      "small2": "2026-05-23",
+      "id": "c05"
+    },
+    {
+      "barrels": 40,
+      "notes": "",
+      "order": "2026-05-23",
+      "received": "2026-05-23",
+      "small1": "2026-06-06",
+      "small2": "2026-06-20",
+      "id": "c06"
+    },
+    {
+      "barrels": 40,
+      "notes": "",
+      "order": "2026-06-20",
+      "received": "2026-06-21",
+      "small1": "2026-07-04",
+      "small2": "2026-07-19",
+      "id": "c07"
+    },
+    {
+      "barrels": 40,
+      "notes": "",
+      "order": "2026-07-19",
+      "received": "2026-07-20",
+      "small1": "2026-08-01",
+      "small2": "2026-08-15",
+      "id": "c08"
+    },
+    {
+      "barrels": 40,
+      "notes": "",
+      "order": "2026-08-15",
+      "received": "2026-08-16",
+      "small1": "2026-08-29",
+      "small2": "2026-09-12",
+      "id": "c09"
+    },
+    {
+      "barrels": 40,
+      "notes": "",
+      "order": "2026-09-12",
+      "received": "2026-09-13",
+      "small1": "2026-09-25",
+      "small2": "",
+      "id": "c10"
+    }
+  ],
+  "spares": [
+    {
+      "category": "Engine",
+      "generator": "All generators",
+      "item": "Motorine",
+      "location": "Office -Block Store",
+      "minQty": 1,
+      "notes": "",
+      "partNo": "",
+      "qty": 1,
+      "id": "mujsgmyy2v75j"
+    },
+    {
+      "category": "Engine",
+      "generator": "All generators",
+      "item": "small-dynimo -starter",
+      "location": "Office-Block Store",
+      "minQty": 1,
+      "notes": "",
+      "partNo": "",
+      "qty": 1,
+      "id": "mumcnznb1tlkl"
+    },
+    {
+      "category": "Belt",
+      "generator": "All generators",
+      "item": "Small Fan-Belt",
+      "location": "Office-Block store",
+      "minQty": 1,
+      "notes": "",
+      "partNo": "",
+      "qty": 3,
+      "id": "mumcpw35gwemd"
+    },
+    {
+      "category": "Engine",
+      "generator": "All generators",
+      "item": "Temperature Sensor",
+      "location": "Office-Block store",
+      "minQty": 1,
+      "notes": "",
+      "partNo": "",
+      "qty": 3,
+      "id": "mumi64a4jt7f4"
+    },
+    {
+      "category": "Engine",
+      "generator": "All generators",
+      "item": "Speed Sensor",
+      "location": "Office-Block Store",
+      "minQty": 1,
+      "notes": "",
+      "partNo": "",
+      "qty": 3,
+      "id": "mumi7eoie3i58"
+    },
+    {
+      "category": "Engine",
+      "generator": "All generators",
+      "item": "Water-Pumb",
+      "location": "Office-Block Store",
+      "minQty": 1,
+      "notes": "",
+      "partNo": "",
+      "qty": 1,
+      "id": "mumi9krd0rbel"
+    },
+    {
+      "category": "Fuel system",
+      "generator": "All generators",
+      "item": "Fuel-Pum Transfer",
+      "location": "Office-Block Store",
+      "minQty": 1,
+      "notes": "",
+      "partNo": "",
+      "qty": 1,
+      "id": "mumib7z8ly1cp"
+    },
+    {
+      "category": "Filter",
+      "generator": "All generators",
+      "item": "Air-Filter",
+      "location": "Office-Block Store",
+      "minQty": 1,
+      "notes": "",
+      "partNo": "",
+      "qty": 3,
+      "id": "mumicimzyip2i"
+    },
+    {
+      "category": "Filter",
+      "generator": "All generators",
+      "item": "Lube Filter-LF3349",
+      "location": "Office-Block Store",
+      "minQty": 1,
+      "notes": "",
+      "partNo": "",
+      "qty": 9,
+      "id": "mumids6lugfbq"
+    },
+    {
+      "category": "Filter",
+      "generator": "All generators",
+      "item": "Fuel-Water Seperate -FS128",
+      "location": "Office-Block Store",
+      "minQty": 1,
+      "notes": "",
+      "partNo": "",
+      "qty": 10,
+      "id": "mumif4vgsexpa"
+    },
+    {
+      "category": "Filter",
+      "generator": "All generators",
+      "item": "Fuel-Filter -FF5052",
+      "location": "Office-Block Store",
+      "minQty": 1,
+      "notes": "",
+      "partNo": "",
+      "qty": 12,
+      "id": "mumig954arufn"
+    },
+    {
+      "category": "Filter",
+      "generator": "All generators",
+      "item": "Fuel Filter-FG-1902138",
+      "location": "Office-Block Store",
+      "minQty": 1,
+      "notes": "",
+      "partNo": "",
+      "qty": 12,
+      "id": "mumihen5q4yml"
+    }
+  ],
+  "filterChanges": [
+    {
+      "date": "2026-09-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 1",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujnmx5d681v3"
+    },
+    {
+      "date": "2026-09-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 2",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujnp0r4o29r3"
+    },
+    {
+      "date": "2026-09-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 3",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujntykixw6tk"
+    },
+    {
+      "date": "2026-08-02",
+      "doneBy": "Nor Hussein Hassan",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 1",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujqjudm4x63o"
+    },
+    {
+      "date": "2026-08-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 2",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujqm4yk18o7o"
+    },
+    {
+      "date": "2026-08-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 3",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujqnkn0ang88"
+    },
+    {
+      "date": "2026-07-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Air",
+        "Water separator",
+        "Coolant"
+      ],
+      "generator": "Generator 1",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujqp6b8w3q01"
+    },
+    {
+      "date": "2026-07-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Air",
+        "Water separator",
+        "Coolant"
+      ],
+      "generator": "Generator 2",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujqubrlyxbtv"
+    },
+    {
+      "date": "2026-07-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Air",
+        "Water separator",
+        "Coolant"
+      ],
+      "generator": "Generator 3",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujqvsh0kcl17"
+    },
+    {
+      "date": "2026-06-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 1",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujqyxbvmin6u"
+    },
+    {
+      "date": "2026-06-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 2",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujr0nexr14uo"
+    },
+    {
+      "date": "2026-06-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 3",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujr202bkvpi7"
+    },
+    {
+      "date": "2026-05-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 1",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujr3ybxni3me"
+    },
+    {
+      "date": "2026-05-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 2",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujr5dw94eqss"
+    },
+    {
+      "date": "2026-05-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 3",
+      "notes": "",
+      "runHours": 0,
+      "id": "mujr64758l6qm"
+    },
+    {
+      "date": "2026-04-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Air",
+        "Water separator"
+      ],
+      "generator": "Generator 1",
+      "notes": "",
+      "runHours": 0,
+      "id": "mumgb055k73jn"
+    },
+    {
+      "date": "2026-04-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Air",
+        "Water separator"
+      ],
+      "generator": "Generator 2",
+      "notes": "",
+      "runHours": 0,
+      "id": "mumgbsk1q56z3"
+    },
+    {
+      "date": "2026-04-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Air",
+        "Water separator"
+      ],
+      "generator": "Generator 3",
+      "notes": "",
+      "runHours": 0,
+      "id": "mumgdeho4lfol"
+    },
+    {
+      "date": "2026-03-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 1",
+      "notes": "",
+      "runHours": 0,
+      "id": "mumgeo2y171rb"
+    },
+    {
+      "date": "2026-03-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 2",
+      "notes": "",
+      "runHours": 0,
+      "id": "mumgf88p0aoo8"
+    },
+    {
+      "date": "2026-03-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 3",
+      "notes": "",
+      "runHours": 0,
+      "id": "mumggtu117459"
+    },
+    {
+      "date": "2026-02-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 1",
+      "notes": "",
+      "runHours": 0,
+      "id": "mumgjqwv1vpt6"
+    },
+    {
+      "date": "2026-02-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 2",
+      "notes": "",
+      "runHours": 0,
+      "id": "mumgk99a6v8gr"
+    },
+    {
+      "date": "2026-02-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 3",
+      "notes": "",
+      "runHours": 0,
+      "id": "mumglone0g0sb"
+    },
+    {
+      "date": "2026-01-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Air",
+        "Water separator",
+        "Coolant"
+      ],
+      "generator": "Generator 1",
+      "notes": "",
+      "runHours": 0,
+      "id": "mumgo898zvwn5"
+    },
+    {
+      "date": "2026-01-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Air",
+        "Water separator",
+        "Coolant"
+      ],
+      "generator": "Generator 2",
+      "notes": "",
+      "runHours": 0,
+      "id": "mumgp2demlwra"
+    },
+    {
+      "date": "2026-01-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Air",
+        "Water separator",
+        "Coolant"
+      ],
+      "generator": "Generator 3",
+      "notes": "",
+      "runHours": 0,
+      "id": "mumgpy4o8qfdw"
+    },
+    {
+      "date": "2026-10-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 1",
+      "notes": "",
+      "runHours": 0,
+      "id": "muryixrth1s5p"
+    },
+    {
+      "date": "2026-10-02",
+      "doneBy": "",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 2",
+      "notes": "",
+      "runHours": 0,
+      "id": "muryjbcibv1w1"
+    },
+    {
+      "date": "2026-10-02",
+      "doneBy": "Hussein Mohamed Salah",
+      "filters": [
+        "Oil",
+        "Fuel",
+        "Water separator"
+      ],
+      "generator": "Generator 3",
+      "notes": "",
+      "runHours": 0,
+      "id": "muryjq5siqi2f"
+    }
+  ],
+  "filterOrders": [],
+  "problems": [],
+  "replacements": [
+    {
+      "date": "2026-07-27",
+      "doneBy": "Hussein Mohamed Salah",
+      "faulty": "motorine",
+      "generator": "Generator 1",
+      "partNo": "",
+      "qty": 1,
+      "reason": "it did not work",
+      "replacedWith": "new Motorin",
+      "id": "mujrv0k4nmazy"
+    }
+  ],
+  "painting": [
+    {
+      "areas": [],
+      "completedDate": "2026-04-20",
+      "doneBy": "Team Waberi",
+      "notes": "The team has successfully completed the anti-corrosion painting works for the following assets and facilities: \uf0b7 Generators \uf0b7 Fuel tanks \uf0b7 Power cable channel covers \uf0b7 Exhaust pipes \uf0b7 Changeover racks \uf0b7 Generator room gate\n\uf0b7 Outdoor fans \uf0b7 CLS DC entrance gates \uf0b7 Staff housing containers \uf0b7 Main entrance gate\n\uf0b7 Office block air conditioning units \uf0b7 Office block entrance gate",
+      "round": "First Half of 2026 anti-Corrossion Painting",
+      "startDate": "2026-04-01",
+      "id": "mujrapjjx0evw"
+    }
+  ],
+  "uniforms": [
+    {
+      "items": [
+        "Safety boots",
+        "T-shirt"
+      ],
+      "notes": "",
+      "orderDate": "2026-07-15",
+      "qty": 2,
+      "receivedDate": "2026-07-28",
+      "size": "xl",
+      "staff": "Ahmed Hirsi Awal",
+      "id": "mujrqpimsryyv"
+    },
+    {
+      "items": [
+        "Safety boots",
+        "T-shirt"
+      ],
+      "notes": "",
+      "orderDate": "2026-07-15",
+      "qty": 2,
+      "receivedDate": "2026-07-28",
+      "size": "xl",
+      "staff": "Hussein Mohamed Salah",
+      "id": "mumhct53wazc5"
+    },
+    {
+      "items": [
+        "Safety boots",
+        "T-shirt"
+      ],
+      "notes": "",
+      "orderDate": "2026-07-15",
+      "qty": 2,
+      "receivedDate": "2026-07-28",
+      "size": "xll",
+      "staff": "Mohamed Haji Mohamed",
+      "id": "mumhfnh5n38vg"
+    },
+    {
+      "items": [
+        "Safety boots",
+        "T-shirt"
+      ],
+      "notes": "",
+      "orderDate": "2026-07-15",
+      "qty": 1,
+      "receivedDate": "2026-07-28",
+      "size": "xll",
+      "staff": "Mohamed Ibrahim Mohamed",
+      "id": "mumhhawdozzhk"
+    },
+    {
+      "items": [
+        "Safety boots",
+        "T-shirt"
+      ],
+      "notes": "",
+      "orderDate": "2026-07-15",
+      "qty": 2,
+      "receivedDate": "2026-07-28",
+      "size": "xl",
+      "staff": "Nor Hussein Hassan",
+      "id": "mumhj3waz4v6c"
+    }
+  ],
+  "staff": [
+    {
+      "name": "Mohamed Dahir Ali",
+      "order": 1,
+      "reportsTo": "",
+      "role": "CLS Manager",
+      "id": "s1"
+    },
+    {
+      "name": "Hussein Mohamed Salah",
+      "order": 2,
+      "reportsTo": "Mohamed Dahir Ali",
+      "role": "Mechanic",
+      "id": "s2"
+    },
+    {
+      "name": "Mohamed Ibrahim Mohamed",
+      "order": 3,
+      "reportsTo": "Hussein Mohamed Salah",
+      "role": "Gen Operator",
+      "id": "s3"
+    },
+    {
+      "name": "Mohamed Haji Mohamed",
+      "order": 4,
+      "reportsTo": "Hussein Mohamed Salah",
+      "role": "Gen Operator",
+      "id": "s4"
+    },
+    {
+      "name": "Ahmed Hirsi Awal",
+      "order": 5,
+      "reportsTo": "Hussein Mohamed Salah",
+      "role": "Gen Operator",
+      "id": "s5"
+    },
+    {
+      "name": "Nor Hussein Hassan",
+      "order": 6,
+      "reportsTo": "Hussein Mohamed Salah",
+      "role": "Gen Operator",
+      "id": "s6"
+    }
+  ],
+  "tasks": [
+    {
+      "assigned": "2026-09-27",
+      "assignee": "Hussein Mohamed Salah",
+      "completed": "",
+      "due": "2026-10-05",
+      "generator": "Generator hall",
+      "notes": "",
+      "priority": "Normal",
+      "rating": "",
+      "status": "In progress",
+      "title": "Generator Outdoor Fan Fixing",
+      "id": "mujs39kxb7g07"
+    }
+  ]
+}
