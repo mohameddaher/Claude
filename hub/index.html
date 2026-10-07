@@ -1,0 +1,1107 @@
+<title>CLS Operations Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: navy slide-out sidebar grouped by department, sticky top bar, hero carousel + department heroes, card dashboard. */
+:root{
+  --bg:#F4F6FA; --card:#FFFFFF; --ink:#142036; --muted:#5F6C86; --line:#DFE5EF; --soft:#EDF1F7; --field:#FFFFFF;
+  --side:#0A1A33; --side-2:#12284B; --side-ink:#C6D3EA; --side-muted:#7E90B2;
+  --noc:#2563EB; --gen:#D97706; --sec:#0D9488; --common:#7C3AED; --mgmt:#0F172A;
+  --ok:#15803D; --warn:#B45309; --bad:#C81E1E; --info:#1D4ED8;
+  --accent:#2563EB;
+  --display:"Outfit",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --shadow:0 1px 2px rgba(16,30,60,.05),0 8px 24px -16px rgba(16,30,60,.25);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#081120; --card:#101B2E; --ink:#E5ECF8; --muted:#8D9BB7; --line:#213150; --soft:#16233A; --field:#0B1628;
+  --side:#050C18; --side-2:#0E1D36; --side-ink:#C6D3EA; --side-muted:#7385A8;
+  --noc:#5B8DEF; --gen:#F59E0B; --sec:#2DD4BF; --common:#A78BFA; --mgmt:#CBD5E1;
+  --ok:#4ADE80; --warn:#FBBF24; --bad:#F87171; --info:#7AA7FF;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -18px rgba(0,0,0,.8); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#081120; --card:#101B2E; --ink:#E5ECF8; --muted:#8D9BB7; --line:#213150; --soft:#16233A; --field:#0B1628;
+  --side:#050C18; --side-2:#0E1D36; --side-ink:#C6D3EA; --side-muted:#7385A8;
+  --noc:#5B8DEF; --gen:#F59E0B; --sec:#2DD4BF; --common:#A78BFA; --mgmt:#CBD5E1;
+  --ok:#4ADE80; --warn:#FBBF24; --bad:#F87171; --info:#7AA7FF;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -18px rgba(0,0,0,.8); color-scheme:dark }
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14.5px;line-height:1.5;font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:2px}
+.acc{color:color-mix(in srgb,var(--accent) 78%,var(--ink))}
+.mono{font-family:var(--mono);font-size:.93em}
+
+/* Sidebar */
+.side{position:fixed;inset:0 auto 0 0;width:272px;background:linear-gradient(180deg,var(--side),var(--side-2));color:var(--side-ink);display:flex;flex-direction:column;z-index:40;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.brand{display:flex;gap:12px;align-items:center;padding:18px 18px 12px}
+.logo{width:44px;height:44px;border-radius:13px;flex:none;display:grid;place-items:center;color:#fff;background:conic-gradient(from 200deg,#2563EB,#0D9488,#D97706,#2563EB);position:relative}
+.logo::after{content:"";position:absolute;inset:3px;border-radius:10px;background:#0A1A33}
+.logo svg{position:relative;z-index:1}
+.brand b{font-family:var(--display);font-size:17px;color:#fff;display:block;line-height:1.15;letter-spacing:-.01em}
+.brand span{font-size:12px;color:var(--side-muted)}
+.sidenav{overflow-y:auto;padding:4px 10px 16px;flex:1;scrollbar-width:thin}
+.grp{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--side-muted);padding:14px 10px 6px;font-weight:600;display:flex;align-items:center;gap:7px}
+.grp i{width:8px;height:8px;border-radius:3px;background:var(--gc)}
+.nv{--c:#60A5FA;display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:var(--side-ink);padding:7px 10px;border-radius:9px;text-align:left;font-size:13.5px;font-weight:500;transition:background .15s,transform .15s}
+.nv .ic{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--c) 26%,transparent);color:color-mix(in srgb,var(--c) 55%,#fff)}
+.nv:hover{background:rgba(255,255,255,.06);color:#fff;transform:translateX(2px)}
+.nv[aria-current="page"]{background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 3px 0 0 var(--c)}
+.nv[aria-current="page"] .ic{background:var(--c);color:#fff}
+.nv .n{margin-left:auto;background:var(--c);color:#fff;border-radius:999px;font-size:11px;font-weight:700;padding:0 7px;line-height:18px}
+.nv span.t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sidefoot{padding:12px 18px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:var(--side-muted);display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:#7E90B2;flex:none}
+.dot.on{background:#34D399;box-shadow:0 0 0 3px rgba(52,211,153,.2)}
+.scrim{position:fixed;inset:0;background:rgba(5,12,24,.55);z-index:35;border:0}
+
+/* Top bar + main */
+.wrap{margin-left:272px;min-width:0}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--card) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:10px;padding:10px 24px;min-height:60px}
+.burger{display:none;border:1px solid var(--line);background:var(--card);border-radius:10px;width:38px;height:38px;place-items:center;flex:none}
+.crumb{min-width:0;margin-right:auto}
+.crumb small{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.crumb b{font-family:var(--display);font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.navchip{font-size:12.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--card);white-space:nowrap}
+.navchip b{color:var(--ink);font-weight:600}
+.theme{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--soft);flex:none}
+.theme button{border:0;background:transparent;border-radius:999px;width:32px;height:28px;display:grid;place-items:center;color:var(--muted)}
+.theme button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.18)}
+main{padding-block:22px 64px;padding-inline:24px;max-width:1400px}
+#view{animation:enter .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes enter{from{transform:translateY(8px)}to{transform:none}}
+.band{height:5px;border-radius:5px;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 30%,var(--card)));margin-bottom:18px}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+h2.title{font-family:var(--display);font-size:27px;margin:0;font-weight:700;letter-spacing:-.02em;text-wrap:balance}
+.sub{color:var(--muted);margin:3px 0 0;max-width:74ch}
+h3{font-family:var(--display);font-size:16.5px;font-weight:600;margin:26px 0 12px}
+.card h3{margin-top:0}
+
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))}
+.grid>*{min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow)}
+.stat{--c:var(--accent);position:relative;overflow:hidden;transition:transform .18s,border-color .18s}
+.stat::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--c)}
+.stat .k{font-size:12.5px;color:var(--muted);font-weight:500}
+.stat .v{font-family:var(--display);font-size:27px;font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-top:2px}
+.stat .d{font-size:12.5px;color:var(--muted)}
+.stat[data-goto]{cursor:pointer}
+.stat[data-goto]:hover{border-color:var(--c);transform:translateY(-2px)}
+
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 13%,var(--card))}
+.warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 15%,var(--card))}
+.bad{color:var(--bad);background:color-mix(in srgb,var(--bad) 13%,var(--card))}
+.info{color:var(--info);background:color-mix(in srgb,var(--info) 13%,var(--card))}
+.neutral{color:var(--muted);background:var(--soft)}
+.tag{display:inline-block;background:color-mix(in srgb,var(--accent) 11%,var(--card));color:color-mix(in srgb,var(--accent) 80%,var(--ink));font-size:12px;font-weight:600;border-radius:6px;padding:1px 7px;margin:1px 3px 1px 0}
+
+.btn{border:0;background:var(--accent);color:#fff;padding:9px 15px;border-radius:10px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:filter .15s,transform .15s}
+.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--soft);filter:none}
+.btn.sm{padding:5px 10px;font-size:13px;border-radius:8px}
+.btn.danger{background:#C81E1E}
+.icon-btn{border:1px solid var(--line);background:var(--card);border-radius:8px;width:30px;height:30px;display:inline-grid;place-items:center;color:var(--muted)}
+.icon-btn:hover{color:var(--ink);background:var(--soft)}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;border:1px solid var(--line);border-radius:12px;padding:4px;background:var(--card)}
+.seg button{border:0;background:none;border-radius:8px;padding:6px 12px;font-weight:600;font-size:13px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.search{flex:1;min-width:160px;max-width:340px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--field)}
+.count{color:var(--muted);font-size:12.5px;margin-left:auto}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:620px}
+th{text-align:left;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:10px 12px;background:var(--soft);border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:color-mix(in srgb,var(--accent) 6%,var(--card))}
+td.act{white-space:nowrap;text-align:right;width:1%}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.clip{max-width:300px}
+.hint{color:var(--muted);font-size:12px;font-weight:400}
+
+/* Hero carousel */
+.carousel{position:relative;border-radius:24px;overflow:hidden;box-shadow:var(--shadow)}
+.slides{display:flex;transition:transform .7s cubic-bezier(.65,0,.35,1)}
+.slide{flex:0 0 100%;min-width:0}
+.hero{position:relative;overflow:hidden;border-radius:22px;color:#EAF4FF;padding:28px 30px 26px;isolation:isolate}
+.carousel .hero{border-radius:0;padding-bottom:58px;min-height:100%}
+.hero.h-cls{background:radial-gradient(120% 140% at 100% 0%,#1E3A8A 0%,#0B1E3F 45%,#050D1C 100%)}
+.hero.h-noc{background:radial-gradient(120% 140% at 0% 0%,#1E5BD8 0%,#0B2C6B 42%,#061633 100%)}
+.hero.h-gen{background:radial-gradient(120% 140% at 0% 100%,#B45309 0%,#5A2A06 45%,#1C0E04 100%)}
+.hero.h-sec{background:radial-gradient(120% 140% at 100% 100%,#0F766E 0%,#0B3B3A 45%,#05181A 100%)}
+.hero h2{font-family:var(--display);font-size:clamp(26px,4vw,42px);margin:6px 0 6px;font-weight:800;letter-spacing:-.025em;line-height:1.05;color:#fff;text-wrap:balance}
+.hero p{margin:0;color:rgba(234,244,255,.78);max-width:62ch}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#7DD3FC;font-weight:600;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.h-gen .eyebrow{color:#FCD34D}.h-sec .eyebrow{color:#5EEAD4}
+.live{display:inline-flex;align-items:center;gap:6px;color:#86EFAC}
+.live i{width:8px;height:8px;border-radius:50%;background:#22C55E;animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.6)}70%{box-shadow:0 0 0 9px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:center;margin-top:16px}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr}}
+.herostats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.hs{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:10px 14px;cursor:pointer;text-align:left;color:inherit;transition:background .2s,transform .2s}
+.hs:hover{background:rgba(255,255,255,.15);transform:translateY(-2px)}
+.hs b{font-family:var(--display);font-size:26px;display:block;color:#fff;line-height:1.15}
+.hs span{font-size:12px;color:rgba(234,244,255,.72)}
+.cnav{position:absolute;left:0;right:0;bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px;z-index:3}
+.cdot{width:9px;height:9px;border-radius:999px;border:0;background:rgba(255,255,255,.35);padding:0;transition:width .3s,background .3s}
+.cdot[aria-current="true"]{width:28px;background:#fff}
+.carr{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.25);color:#fff;display:grid;place-items:center}
+.carr:hover{background:rgba(0,0,0,.45)}
+.cprog{position:absolute;left:0;top:0;height:3px;background:rgba(255,255,255,.7);z-index:3;width:0}
+.cprog.run{animation:prog 8s linear forwards}
+@keyframes prog{to{width:100%}}
+.route{display:block;width:100%;height:auto}
+.route .flow{stroke-dasharray:2 8;animation:flow 1.6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-20}}
+.tankwrap{display:flex;gap:24px;align-items:flex-end;justify-content:center;flex-wrap:wrap}
+.tank .lbl{font-weight:600;margin-top:6px;text-align:center}
+.tank .amt{color:var(--muted);font-size:13px;text-align:center}
+.hero .tank .amt{color:rgba(255,255,255,.75)}.hero .tank .lbl{color:#fff}
+.wave{animation:wave 3.2s ease-in-out infinite}
+@keyframes wave{0%,100%{transform:translateX(0)}50%{transform:translateX(-18px)}}
+.radar{width:100%;max-width:260px;height:auto;display:block;margin:auto}
+.radar .sweep{transform-origin:130px 130px;animation:spin 4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.radar .blip{animation:blink 4s linear infinite}
+@keyframes blink{0%,100%{opacity:.25}10%{opacity:1}40%{opacity:.4}}
+.duty{border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:12px 14px;background:rgba(255,255,255,.05)}
+.duty .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(234,244,255,.6)}
+.duty .sh{font-family:var(--display);font-size:22px;font-weight:700;color:#fff;line-height:1.15;margin:2px 0 6px}
+.duty ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.duty li{display:flex;align-items:center;gap:9px;color:#fff}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:11.5px;flex:none;background:var(--c,var(--noc));color:#fff}
+
+/* Department strip + tiles */
+.depts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}
+.dept{--c:var(--noc);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.dept::after{content:"";position:absolute;right:-40px;top:-40px;width:130px;height:130px;border-radius:50%;background:color-mix(in srgb,var(--c) 12%,transparent)}
+.dept header{display:flex;align-items:center;gap:10px;margin-bottom:10px;position:relative;z-index:1}
+.dept header .ic{width:36px;height:36px;border-radius:11px;background:var(--c);color:#fff;display:grid;place-items:center}
+.dept header b{font-family:var(--display);font-size:16px;display:block;line-height:1.15}
+.dept header small{color:var(--muted);font-size:12px}
+.dept .row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--line);font-size:13.5px;position:relative;z-index:1}
+.dept .row b{font-weight:600}
+.dept .go{margin-top:10px;position:relative;z-index:1}
+.alerts{display:flex;flex-direction:column;gap:8px}
+.alert{--c:var(--accent);display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-left:5px solid var(--c);border-radius:12px;padding:9px 14px;background:var(--card);cursor:pointer;text-align:left;width:100%;transition:background .15s,transform .15s}
+.alert:hover{background:var(--soft);transform:translateX(3px)}
+.alert b{display:block;font-weight:600}
+.alert small{color:var(--muted);font-size:12.5px}
+.alert i{margin-left:auto;font-style:normal;font-weight:600;font-size:12.5px;color:color-mix(in srgb,var(--c) 70%,var(--ink));white-space:nowrap}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.tile{--c:var(--accent);border:1px solid color-mix(in srgb,var(--c) 30%,var(--line));background:color-mix(in srgb,var(--c) 8%,var(--card));border-radius:14px;padding:12px;text-align:left;display:flex;gap:10px;align-items:center;transition:transform .18s,background .18s}
+.tile:hover{background:color-mix(in srgb,var(--c) 16%,var(--card));transform:translateY(-2px)}
+.tile .ic{width:34px;height:34px;border-radius:10px;background:var(--c);color:#fff;display:grid;place-items:center;flex:none}
+.tile b{display:block;font-size:13.5px;font-weight:600;line-height:1.25}
+.tile small{color:var(--muted);font-size:12px}
+
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar{display:grid;grid-template-columns:minmax(120px,1.3fr) 2fr 54px;gap:10px;align-items:center;font-size:13px}
+.bar .track{height:12px;background:var(--soft);border-radius:8px;overflow:hidden}
+.bar .track i{display:block;height:100%;border-radius:8px;transform-origin:left;animation:grow .9s cubic-bezier(.2,.8,.2,1)}
+@keyframes grow{from{transform:scaleX(.05)}to{transform:none}}
+.bar .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar b{text-align:right}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+svg .ax{fill:var(--muted);font-size:11px;font-family:var(--body)}
+svg .gl{stroke:var(--line)}
+.chart{width:100%;overflow-x:auto}
+.chart svg{display:block;width:100%;min-width:480px;height:auto}
+
+/* Schedule */
+.sched{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;align-items:center;min-width:560px}
+.sched .lane{position:relative;height:30px;background:var(--soft);border-radius:8px;overflow:hidden}
+.sched .blk{position:absolute;top:3px;bottom:3px;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:12px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden}
+.sched .blk.now{box-shadow:0 0 0 2px var(--ink)}
+.sched .nowline{position:absolute;top:0;bottom:0;width:2px;background:var(--bad);z-index:2}
+.sched .ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-family:var(--mono)}
+.shtable td,.shtable th{font-size:13.5px}
+.shtable tr.now td{background:color-mix(in srgb,var(--ok) 10%,var(--card));font-weight:600}
+
+/* Port faceplates */
+.plate{background:#0C1626;border-radius:14px;padding:14px;border:1px solid #22324F;overflow-x:auto}
+.plate .cap{color:#9FB2D4;font-size:12px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.plate .cap b{color:#fff;font-family:var(--display);font-size:14px}
+.ports{display:grid;grid-template-columns:repeat(8,minmax(52px,1fr));gap:7px;min-width:460px}
+.ports.free{grid-template-columns:repeat(auto-fill,minmax(78px,1fr));min-width:0}
+.port{border:1px solid #2C3F61;background:#14233B;border-radius:8px;padding:6px 4px 5px;text-align:center;color:#9FB2D4;font-family:var(--mono);font-size:12px;line-height:1.2}
+.port:hover{border-color:#fff}
+.port .led{display:block;width:8px;height:8px;border-radius:50%;margin:0 auto 4px;background:#52627F}
+.port small{display:block;font-family:var(--body);font-size:9.5px;color:#7E90B2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.port.up{color:#fff;background:#0F3B2E;border-color:#1F7A5A}.port.up .led{background:#34D399;box-shadow:0 0 6px #34D399;animation:led 2.4s ease-in-out infinite}
+@keyframes led{50%{opacity:.55}}
+.port.down{background:#3A1A1F;border-color:#7A2E38;color:#F3C4C9}.port.down .led{background:#F87171}
+
+/* Org chart */
+.orgtree{display:flex;flex-direction:column;align-items:center;gap:0;overflow-x:auto;padding:4px 0}
+.on{border:1.5px solid color-mix(in srgb,var(--c,var(--accent)) 40%,var(--line));background:color-mix(in srgb,var(--c,var(--accent)) 9%,var(--card));border-radius:12px;padding:9px 16px;text-align:center;min-width:200px;max-width:320px}
+.on b{display:block;font-weight:600}
+.on span{font-size:12.5px;color:var(--muted)}
+.on.lead{background:var(--c);border-color:var(--c);color:#fff}.on.lead span{color:rgba(255,255,255,.82)}
+.ol{width:2px;height:22px;background:color-mix(in srgb,var(--muted) 45%,var(--line))}
+.ocols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;width:100%;border-top:2px solid color-mix(in srgb,var(--muted) 45%,var(--line));padding-top:16px}
+.ocol{--c:var(--noc);border:1px solid color-mix(in srgb,var(--c) 30%,var(--line));border-radius:14px;padding:10px;background:color-mix(in srgb,var(--c) 5%,var(--card))}
+.ocol h4{margin:0 0 8px;font-family:var(--display);font-size:14px;color:color-mix(in srgb,var(--c) 80%,var(--ink));display:flex;justify-content:space-between}
+.person{display:flex;gap:9px;align-items:center;padding:6px 4px;border-top:1px solid var(--line)}
+.person:first-of-type{border-top:0}
+.person b{display:block;font-size:13.5px;font-weight:600;line-height:1.2}
+.person small{color:var(--muted);font-size:12px}
+.progress{height:8px;background:var(--soft);border-radius:8px;overflow:hidden;min-width:90px}
+.progress i{display:block;height:100%;background:var(--c,var(--accent));border-radius:8px}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.kv:last-child{border-bottom:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:500;background:var(--card)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.timeline{display:flex;flex-direction:column;gap:10px}
+.step{display:flex;gap:12px;align-items:flex-start}
+.step .b{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12px;font-weight:700;border:2px solid var(--gen);color:var(--gen);background:var(--card)}
+.step.done .b{background:var(--gen);color:#fff}
+.step.pred .b{border-style:dashed}
+.step .t{font-weight:600}
+.step .s{color:var(--muted);font-size:13px}
+.stars{color:#F59E0B;letter-spacing:1px}
+
+/* Modal */
+.backdrop{position:fixed;inset:0;background:rgba(5,12,24,.55);display:flex;align-items:flex-start;justify-content:center;z-index:60;overflow-y:auto;padding:max(24px,env(safe-area-inset-top,0px)) 14px 24px}
+.modal{background:var(--card);border-radius:18px;width:100%;max-width:640px;border-top:6px solid var(--accent);box-shadow:0 30px 60px -20px rgba(0,0,0,.5);animation:pop .2s ease-out}
+@keyframes pop{from{transform:translateY(10px) scale(.98)}to{transform:none}}
+.modal header{padding:16px 20px 2px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.modal h4{margin:0;font-family:var(--display);font-size:19px}
+.modal .body{padding:10px 20px}
+.modal footer{padding:12px 20px 18px;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form .full{grid-column:1/-1}
+.form label,.form .lbl{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--muted);min-width:0}
+.form input,.form select,.form textarea{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--field);color:var(--ink);font-weight:400;font-size:14.5px;width:100%}
+.form textarea{min-height:72px;resize:vertical}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#0A1A33;color:#fff;padding:10px 18px;border-radius:12px;z-index:70;max-width:90vw;border:1px solid #2C3F61;animation:pop .2s ease-out}
+
+@media (max-width:1000px){
+  .side{transform:translateX(-100%)} .side.open{transform:none;box-shadow:0 0 60px rgba(0,0,0,.5)}
+  .wrap{margin-left:0} .burger{display:grid}
+  .nav{padding-inline:16px} main{padding-inline:16px}
+  .navchip.opt{display:none}
+}
+@media (max-width:560px){.form{grid-template-columns:1fr} h2.title{font-size:23px} .hero{padding:22px 18px 22px} .carousel .hero{padding-bottom:60px} .bar{grid-template-columns:1fr 1fr 48px} .navchip{display:none} .carr{display:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<aside class="side" id="side" aria-label="Sections">
+  <div class="brand">
+    <div class="logo" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16c3 0 3-3 6-3s3 3 6 3 3-3 6-3"/><path d="M12 3 5 6v4c0 3 3 5 7 6 4-1 7-3 7-6V6z" opacity=".9"/></svg></div>
+    <div><b>CLS Operations Hub</b><span>Mogadishu CLS datacenter · DARE1</span></div>
+  </div>
+  <nav class="sidenav" id="sidenav"></nav>
+  <div class="sidefoot"><span class="dot" id="syncDot"></span><span id="syncLbl">Connecting…</span></div>
+</aside>
+<button class="scrim" id="scrim" hidden aria-label="Close menu"></button>
+<div class="wrap">
+  <header class="nav">
+    <button class="burger" id="burger" aria-label="Open menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <div class="crumb"><small id="crumbGrp">Dashboard</small><b id="crumbTtl">Overview</b></div>
+    <span class="navchip opt" id="chipShift"></span>
+    <span class="navchip" id="chipClock"></span>
+    <div class="theme" role="group" aria-label="Colour theme">
+      <button type="button" data-t="light" aria-label="Light mode" title="Light mode"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      <button type="button" data-t="system" aria-label="Match device" title="Match device"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></button>
+      <button type="button" data-t="dark" aria-label="Dark mode" title="Dark mode"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    </div>
+  </header>
+  <main><div class="band"></div><div id="view"></div></main>
+</div>
+<div class="backdrop" id="backdrop" hidden><div class="modal" id="modal" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- helpers ---------- */
+const DAY=864e5, MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"], WD=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const $=id=>document.getElementById(id);
+const TZ="Africa/Mogadishu";
+function nowParts(){try{const o={};new Intl.DateTimeFormat("en-GB",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).formatToParts(new Date()).forEach(p=>o[p.type]=p.value);return {y:+o.year,m:+o.month,d:+o.day,h:+o.hour%24,mi:+o.minute,s:+o.second}}catch(e){const d=new Date();return {y:d.getFullYear(),m:d.getMonth()+1,d:d.getDate(),h:d.getHours(),mi:d.getMinutes(),s:d.getSeconds()}}}
+function nowMin(){const p=nowParts();return p.h*60+p.mi}
+function hhmm(){const p=nowParts();return String(p.h).padStart(2,"0")+":"+String(p.mi).padStart(2,"0")}
+function parseD(s){if(!s)return null;const [y,m,d]=String(s).slice(0,10).split("-").map(Number);return y?new Date(y,m-1,d||1):null}
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function today(){const p=nowParts();return new Date(p.y,p.m-1,p.d)}
+function diff(a,b){return Math.round((b-a)/DAY)}
+function addDays(d,n){return new Date(d.getTime()+n*DAY)}
+function addMonths(d,n){const r=new Date(d);r.setMonth(r.getMonth()+n);return r}
+function fd(s){const d=typeof s==="string"?parseD(s):s;return d?d.getDate()+" "+MON[d.getMonth()]+" "+d.getFullYear():"—"}
+function fds(s){const d=typeof s==="string"?parseD(s):s;return d?d.getDate()+" "+MON[d.getMonth()]:"—"}
+function fdt(s){if(!s)return "—";return fd(s)+(String(s).length>10?" "+String(s).slice(11,16):"")}
+function rel(d){const n=diff(today(),d);return n===0?"today":n===1?"tomorrow":n===-1?"yesterday":n>0?"in "+n+" days":Math.abs(n)+" days ago"}
+function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function num(v){const n=parseFloat(v);return isFinite(n)?n:null}
+function dash(v){return v==null||v===""?"—":esc(Array.isArray(v)?v.join(", "):v)}
+function avg(a){a=a.filter(x=>x!=null);return a.length?a.reduce((x,y)=>x+y,0)/a.length:null}
+function pill(txt,tone){return txt?`<span class="pill ${tone||"neutral"}">${esc(txt)}</span>`:"—"}
+function initials(n){const p=String(n||"?").trim().split(/\s+/);return ((p[0]||"?")[0]+((p[1]||"")[0]||"")).toUpperCase()}
+const TONES={Active:"ok",Online:"ok","Not active":"bad",Offline:"bad",Unconfirmed:"neutral",Reserved:"info",Faulty:"bad",Spare:"info",Decommissioned:"neutral",
+ Open:"bad","In progress":"warn",Fixed:"ok",Resolved:"ok",Completed:"ok",Done:"ok",Pending:"warn","To do":"info",Planned:"info",Approved:"ok",Taken:"neutral",Cancelled:"neutral",
+ Repaired:"ok","No repair needed":"ok",Normal:"ok",Alarm:"bad",Warning:"warn",Critical:"bad",Major:"bad",Minor:"warn",Cleared:"ok",Urgent:"bad",High:"warn",Low:"neutral","In use":"ok",Free:"neutral",
+ Requested:"info",Denied:"bad",Inside:"warn",Exited:"neutral",Medium:"info"};
+const sp=s=>pill(s,TONES[s]);
+const ICON={
+ home:"M3 11 12 3l9 8M5 10v10h14V10",wave:"M3 12h4l3 8 4-16 3 8h4",bell:"M6 9a6 6 0 1 1 12 0c0 6 2 7 2 7H4s2-1 2-7M10 20a2 2 0 0 0 4 0",bolt:"M13 2 4 14h7l-1 8 9-12h-7z",
+ temp:"M10 14V5a2 2 0 1 1 4 0v9a4 4 0 1 1-4 0",drop:"M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z",batt:"M3 8h15v8H3zM18 11h3v2h-3M7 10v4M11 10v4",plug:"M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0zM12 17v5",
+ grid:"M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z",router:"M3 14h18v6H3zM7 17h.01M11 17h.01M12 14V8M8 6a6 6 0 0 1 8 0",shield:"M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z",
+ sw:"M3 8h18v8H3zM7 12h.01M11 12h.01M15 12h.01",rack:"M5 3h14v18H5zM5 9h14M5 15h14M9 6h.01M9 12h.01M9 18h.01",ip:"M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18",
+ warn:"M12 9v4M12 17h.01M10.3 4 2 18a2 2 0 0 0 1.7 3h16.6A2 2 0 0 0 22 18L13.7 4a2 2 0 0 0-3.4 0z",cam:"M3 7h13v10H3zM16 10l5-3v10l-5-3",check:"M4 12l5 5L20 6",hole:"M12 5a9 4 0 1 0 0 8 9 4 0 0 0 0-8M3 9v6c0 2.2 4 4 9 4s9-1.8 9-4V9",
+ brush:"M19 11h-7V4a2 2 0 0 0-4 0v7H4v4a7 7 0 0 0 7 7h2a7 7 0 0 0 7-7z",box:"M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8",chip:"M7 7h10v10H7zM10 2v3M14 2v3M10 19v3M14 19v3M2 10h3M2 14h3M19 10h3M19 14h3",
+ tool:"M14 7a4 4 0 0 0 5 5l-9 9-4-4 9-9M5 3l3 3",swap:"M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5",gate:"M4 21V7l8-4 8 4v14M9 21v-7h6v7M9 10h6",cal:"M4 5h16v16H4zM4 10h16M8 3v4M16 3v4",
+ people:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8",
+ fuel:"M3 22h12M4 9h10M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0V9.8a2 2 0 0 0-.6-1.4L18 5",
+ filter:"M3 4h18l-7 9v6l-4 2v-8z",shirt:"M16 3 20 6 18 10 16 9v12H8V9l-2 1-2-4 4-3c1 1.5 2.3 2 4 2s3-.5 4-2z",clock:"M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18M12 7v5l3 2",
+ org:"M9 3h6v5H9zM3 16h6v5H3zM15 16h6v5h-6zM12 8v4M6 16v-4h12v4",idc:"M3 5h18v14H3zM7 10a2 2 0 1 0 4 0 2 2 0 0 0-4 0M6 16c1-2 5-2 6 0M14 9h4M14 13h4",list:"M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"};
+function ic(n,s){return `<svg width="${s||15}" height="${s||15}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON[n]}"/></svg>`}
+
+/* ---------- sections (the slide-out sidebar) ---------- */
+const GROUPS={Dashboard:"#94A3B8",NOC:"#3B82F6",Generator:"#F59E0B",Security:"#14B8A6",Shared:"#A78BFA"};
+const SECTIONS=[
+ {id:"overview",label:"Overview",group:"Dashboard",color:"#3B82F6",icon:"home"},
+ {id:"schedule",label:"Shift schedule",group:"Dashboard",color:"#0EA5E9",icon:"clock"},
+ {id:"org",label:"Reporting line & staff",group:"Dashboard",color:"#8B5CF6",icon:"org"},
+ {id:"noc",label:"NOC overview",group:"NOC",color:"#2563EB",icon:"wave"},
+ {id:"traffic",label:"Link throughput",group:"NOC",color:"#0891B2",icon:"wave"},
+ {id:"alarms",label:"Active alarms",group:"NOC",color:"#E11D48",icon:"bell"},
+ {id:"incidents",label:"Internet incidents",group:"NOC",color:"#BE123C",icon:"warn"},
+ {id:"climate",label:"Room temperature & humidity",group:"NOC",color:"#EA580C",icon:"temp"},
+ {id:"pfe",label:"Power Feeding Equipment",group:"NOC",color:"#7C3AED",icon:"bolt"},
+ {id:"ups",label:"Huawei UPS",group:"NOC",color:"#CA8A04",icon:"batt"},
+ {id:"rectifier",label:"Huawei Rectifier",group:"NOC",color:"#65A30D",icon:"plug"},
+ {id:"ciena",label:"Ciena Site Manager ports",group:"NOC",color:"#C026D3",icon:"grid"},
+ {id:"routers",label:"Cisco routers",group:"NOC",color:"#2563EB",icon:"router"},
+ {id:"firewall",label:"Firewall",group:"NOC",color:"#F97316",icon:"shield"},
+ {id:"planet",label:"Planet switch",group:"NOC",color:"#059669",icon:"sw"},
+ {id:"cswitch",label:"Cisco switch",group:"NOC",color:"#4F46E5",icon:"sw"},
+ {id:"devices",label:"Devices & racks",group:"NOC",color:"#0369A1",icon:"rack"},
+ {id:"ips",label:"IP addresses",group:"NOC",color:"#0F766E",icon:"ip"},
+ {id:"activities",label:"Activity record",group:"NOC",color:"#16A34A",icon:"check"},
+ {id:"manholes",label:"Fiber cable manholes",group:"NOC",color:"#A16207",icon:"hole"},
+ {id:"fuel",label:"Fuel & tanks",group:"Generator",color:"#D97706",icon:"fuel"},
+ {id:"filters",label:"Generator filters",group:"Generator",color:"#0284C7",icon:"filter"},
+ {id:"security",label:"Security overview",group:"Security",color:"#0D9488",icon:"shield"},
+ {id:"gatelog",label:"Visitor gate log",group:"Security",color:"#B9600B",icon:"gate"},
+ {id:"clearance",label:"Airport gate clearance",group:"Security",color:"#DB2777",icon:"idc"},
+ {id:"cctv",label:"CCTV cameras",group:"Security",color:"#9333EA",icon:"cam"},
+ {id:"tasks",label:"Staff tasks",group:"Shared",color:"#6366F1",icon:"list"},
+ {id:"problems",label:"Problems & fixes",group:"Shared",color:"#DC2626",icon:"tool"},
+ {id:"replaced",label:"Replaced parts",group:"Shared",color:"#7C3AED",icon:"swap"},
+ {id:"painting",label:"Anti-corrosion painting",group:"Shared",color:"#15803D",icon:"brush"},
+ {id:"uniforms",label:"Uniforms",group:"Shared",color:"#DB2777",icon:"shirt"},
+ {id:"spares",label:"Spare inventory",group:"Shared",color:"#0E7490",icon:"chip"},
+ {id:"store",label:"Office block store",group:"Shared",color:"#B45309",icon:"box"},
+ {id:"leave",label:"Annual leave",group:"Shared",color:"#2563EB",icon:"cal"}
+];
+const SEC=Object.fromEntries(SECTIONS.map(s=>[s.id,s]));
+
+/* ---------- store ---------- */
+const COLS=["staff","tasks","circuits","traffic","alarms","pfe","env","ups","rectifier","cienaPorts","devicePorts","vlans","devices","ips","incidents","cameras","activities",
+ "problems","replacements","manholes","painting","inventory","genSpares","fuel","filterChanges","filterOrders","uniforms","clearances","gateLog","secReports","leave","leavePlan"];
+const data={};COLS.forEach(c=>data[c]=[]);
+let db=null,downloads=null;const LS="cls-ops-hub-v1";
+function loadLocal(){try{const o=JSON.parse(localStorage.getItem(LS)||"{}");COLS.forEach(c=>{if(Array.isArray(o[c]))data[c]=o[c]})}catch(e){}}
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify(data))}catch(e){}}
+async function saveRec(col,rec){
+  const id=rec.id||uid();const body={...rec};delete body.id;
+  if(db){try{await db.collection(col).doc(id).set(body)}catch(e){toast(e&&e.code==="quota_exceeded"?"Storage is full. Delete old records, then try again.":e&&(e.code==="permission_denied"||e.code==="not_granted")?"You have view-only access to this dashboard.":"Could not save. Check your connection and try again.");return false}}
+  else{const a=data[col];const i=a.findIndex(r=>r.id===id);if(i>=0)a[i]={id,...body};else a.push({id,...body});saveLocal();render()}
+  return true;
+}
+async function delRec(col,id){
+  if(db){try{await db.collection(col).doc(id).delete()}catch(e){toast("Could not delete. Try again.")}}
+  else{data[col]=data[col].filter(r=>r.id!==id);saveLocal();render()}
+}
+let queued=false,dirty=false;
+function queueRender(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;if($("backdrop").hidden)render(true);else dirty=true})}
+function setSync(on,t){$("syncDot").className="dot"+(on?" on":"");$("syncLbl").textContent=t}
+async function initStore(){
+  loadLocal();render();setSync(false,"Saved on this device");
+  if(!window.claude||!window.claude.use)return;
+  let d=null;try{d=await window.claude.use("db")}catch(e){}
+  try{downloads=await window.claude.use("downloads")}catch(e){downloads=null}
+  if(!d){render(true);return}
+  db=d;setSync(true,"Synced for all CLS teams");COLS.forEach(c=>data[c]=[]);
+  COLS.forEach(c=>db.collection(c).onSnapshot(s=>{data[c]=s.docs.map(x=>({id:x.id,...x.data()}));queueRender()},()=>setSync(false,"Offline. Reload to reconnect")));
+  queueRender();
+}
+
+/* ---------- people & departments ---------- */
+const DEPTS=["Leadership","Management","NOC","Generator","Security","Support"];
+const DCOL={Leadership:"var(--mgmt)",Management:"#8B5CF6",NOC:"var(--noc)",Generator:"var(--gen)",Security:"var(--sec)",Support:"#64748B"};
+const DHEX={Leadership:"#334155",Management:"#7C3AED",NOC:"#2563EB",Generator:"#D97706",Security:"#0D9488",Support:"#64748B"};
+const staffSort=(a,b)=>DEPTS.indexOf(a.dept)-DEPTS.indexOf(b.dept)||(a.order||99)-(b.order||99)||String(a.name).localeCompare(String(b.name));
+const people=()=>[...data.staff].sort(staffSort);
+const crew=()=>people().filter(s=>s.dept!=="Leadership");
+const staffNames=()=>crew().map(s=>s.name).filter(Boolean);
+const deptOf=n=>{const s=data.staff.find(x=>x.name===n);return s?s.dept:""};
+const byDept=d=>crew().filter(s=>s.dept===d);
+const allStaff=()=>[...new Set([...staffNames(),...data.leave.map(s=>s.name)].filter(Boolean))].sort();
+function av(name,dept,size){return `<span class="av" style="--c:${DHEX[dept]||"#64748B"}${size?`;width:${size}px;height:${size}px`:""}">${esc(initials(name))}</span>`}
+
+/* ---------- shift schedule (from the staff schedule overview) ---------- */
+const SCHED={
+ NOC:{name:"NOC team",shifts:[{k:"A",from:"08:30",to:"16:30"},{k:"B & C",from:"16:30",to:"08:30",next:1}]},
+ Generator:{name:"Generator operators",shifts:[{k:"A",from:"08:00",to:"14:00"},{k:"B",from:"14:00",to:"20:00"},{k:"C",from:"20:00",to:"02:00",next:1},{k:"D",from:"02:00",to:"08:00"}]},
+ Security:{name:"Security team",shifts:[{k:"A",from:"08:00",to:"14:00"},{k:"B",from:"14:00",to:"20:00"},{k:"C",from:"20:00",to:"02:00",next:1},{k:"D",from:"02:00",to:"08:00"}]}
+};
+const tmin=t=>{const [h,m]=t.split(":").map(Number);return h*60+m};
+function inShift(s,m){const a=tmin(s.from),b=tmin(s.to);return a<b?m>=a&&m<b:m>=a||m<b}
+function curShift(dept){const S=SCHED[dept];if(!S)return null;const m=nowMin();return S.shifts.find(s=>inShift(s,m))||null}
+function fmt12(t){const [h,m]=t.split(":").map(Number);return ((h+11)%12+1)+":"+String(m).padStart(2,"0")+" "+(h<12?"AM":"PM")}
+function onShift(dept){const s=curShift(dept);if(!s)return [];const keys=s.k.split(/\s*&\s*/);return byDept(dept).filter(p=>p.shift&&(p.shift===s.k||keys.includes(p.shift)))}
+function shiftEnds(s){return s?fmt12(s.to):""}
+const circuits=()=>[...data.circuits].sort((a,b)=>(a.order||99)-(b.order||99));
+const SHIFT=["Day","Night"];
+const byDateDesc=k=>(a,b)=>String(b[k]||"").localeCompare(String(a[k]||""))||String(a.shift||"").localeCompare(String(b.shift||""));
+const todayIso=()=>iso(today());
+const SYS=["Generator 1","Generator 2","Generator 3","Fuel system","Generator hall","Ciena","Cisco router","Firewall","Planet switch","Cisco switch","PFE","UPS","Rectifier","Cooling / NetCol","CCTV / NVR","Security / access","Power","Fiber","Building","Other"];
+const readingBase=[{k:"date",label:"Date",type:"date",req:1,def:todayIso},{k:"shift",label:"Shift",type:"select",options:SHIFT,req:1,def:()=>new Date().getHours()>=18||new Date().getHours()<6?"Night":"Day"}];
+const readingTail=[{k:"status",label:"Status",type:"select",options:["Normal","Warning","Alarm"],def:"Normal"},{k:"recordedBy",label:"Recorded by",type:"select",options:staffNames},{k:"notes",label:"Notes",type:"textarea",full:1}];
+const dcol={k:"date",label:"Date",f:r=>`<b>${fd(r.date)}</b>`},scol={k:"shift",label:"Shift",f:r=>pill(r.shift,r.shift==="Night"?"info":"warn")},stcol={k:"status",label:"Status",f:r=>sp(r.status)};
+function tstat(p){return p==null?"":p===0?"No traffic":p<=50?"Low":p<=89?"Mid":"High"}
+function ttone(p){return p==null?"neutral":p===0?"neutral":p<=50?"info":p<=89?"ok":"bad"}
+function tcolor(p){return p==null||p===0?"var(--muted)":p<=50?"#0EA5E9":p<=89?"#16A34A":"#DC2626"}
+function clr(r){const e=r.expires?parseD(r.expires):r.issued?addMonths(parseD(r.issued),3):null;return {exp:e,days:e?diff(today(),e):null}}
+function clrPill(r){const c=clr(r);if(c.days==null)return pill("No date recorded","neutral");if(c.days<0)return pill("Expired "+Math.abs(c.days)+" days ago","bad");if(c.days<=14)return pill("Renew now, "+c.days+" days left","warn");return pill("Valid, "+c.days+" days left","ok")}
+function remain(r){return (num(r.stockIn)||0)-(num(r.stockOut)||0)}
+function bal(r){return (num(r.forward)||0)+(num(r.initial)||0)-(num(r.taken)||0)}
+function envPill(metric,v){if(v==null)return "—";if(metric==="temp")return v>27?pill("High","bad"):v<10?pill("Low","info"):pill("Normal","ok");return v>70?pill("High","warn"):v<30?pill("Low","info"):pill("Normal","ok")}
+function portSchema(title,speeds,vlan){return {title,fields:[
+  {k:"device",label:"Device name",req:1,hint:"e.g. hostname or rack label"},{k:"port",label:"Port",req:1,hint:"e.g. Te0/0/0/4"},
+  {k:"speed",label:"Speed",type:"select",options:speeds},{k:"status",label:"Status",type:"select",options:["Active","Not active"],def:"Active"},
+  ...(vlan?[{k:"vlan",label:"VLAN"},{k:"mode",label:"Mode",type:"select",options:["","Access","Trunk"]}]:[]),
+  {k:"connectedTo",label:"Connected to / service",full:1},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"device",label:"Device",f:r=>`<b>${esc(r.device)}</b>`},{k:"port",label:"Port",f:r=>`<span class="mono">${esc(r.port)}</span>`},{k:"speed",label:"Speed"},stcol,
+   ...(vlan?[{k:"vlan",label:"VLAN",f:r=>r.vlan?`<span class="mono">${esc(r.vlan)}</span>`+(r.mode?` <span class="hint">${esc(r.mode)}</span>`:""):"—"}]:[]),
+   {k:"connectedTo",label:"Connected to / service"},{k:"notes",label:"Notes",f:r=>`<div class="clip">${esc(r.notes)}</div>`}],
+  sort:(a,b)=>String(a.device).localeCompare(String(b.device))||String(a.port).localeCompare(String(b.port),undefined,{numeric:true})}}
+const SCHEMAS={
+ circuits:{title:"circuit",fields:[{k:"name",label:"Circuit / link",req:1},{k:"port",label:"Port",hint:"e.g. 6.6.29 or Te0/0/0/4"},{k:"region",label:"Region",type:"select",options:["Djibouti","Mombasa","Hargeisa","Mogadishu","Dhobley","Bosaso","Other"]},
+   {k:"capacity",label:"Capacity (Gbps)",type:"number",def:10},{k:"order",label:"Sort order",type:"number"},{k:"notes",label:"Notes",full:1}],
+  cols:[{k:"name",label:"Circuit / link",f:r=>`<b>${esc(r.name)}</b>`},{k:"port",label:"Port",f:r=>`<span class="mono">${dash(r.port)}</span>`},{k:"region",label:"Region"},{k:"capacity",label:"Capacity",f:r=>r.capacity?r.capacity+" Gbps":"—"},{k:"notes",label:"Notes"}],
+  sort:(a,b)=>(a.order||99)-(b.order||99)},
+ traffic:{title:"throughput record",get fields(){return [{k:"date",label:"Report date",type:"date",req:1,def:todayIso,full:1},...circuits().map(c=>({k:"c_"+c.id,label:c.name+(c.port?" ("+c.port+")":""),type:"number",hint:"Max throughput %, 0 to 100"}))]},
+  get cols(){return [dcol,...circuits().map(c=>({k:"c_"+c.id,label:c.name+(c.port?" "+c.port:""),f:r=>{const p=num(r["c_"+c.id]);return p==null?"—":`<span class="pill ${ttone(p)}">${p}%</span>`}}))]},
+  sort:byDateDesc("date")},
+ alarms:{title:"alarm",fields:[{k:"source",label:"System",type:"select",options:["Huawei NetEco","Ciena","Cisco","Firewall","Other"],req:1},{k:"severity",label:"Severity",type:"select",options:["Critical","Major","Minor","Warning"],req:1},
+   {k:"description",label:"Description",req:1,full:1},{k:"element",label:"Source / element"},{k:"occurred",label:"Occurred",type:"datetime-local"},{k:"state",label:"State",type:"select",options:["Active","Cleared"],def:"Active"},{k:"cleared",label:"Cleared on",type:"date"},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"severity",label:"Severity",f:r=>sp(r.severity)},{k:"source",label:"System"},{k:"description",label:"Description",f:r=>`<b>${esc(r.description)}</b>`},{k:"element",label:"Source / element",f:r=>`<span class="mono">${dash(r.element)}</span>`},{k:"occurred",label:"Occurred",f:r=>fdt(r.occurred)},
+   {k:"age",label:"Age",f:r=>r.occurred&&r.state!=="Cleared"?diff(parseD(r.occurred),today())+" days":"—"},{k:"state",label:"State",f:r=>pill(r.state,r.state==="Cleared"?"ok":"bad")}],
+  sort:(a,b)=>(a.state==="Cleared")-(b.state==="Cleared")||String(b.occurred||"").localeCompare(String(a.occurred||""))},
+ pfe:{title:"PFE reading",fields:[...readingBase,{k:"voltage",label:"Output voltage (V)",type:"number"},{k:"current",label:"Line current (mA)",type:"number"},{k:"mode",label:"Feed mode",type:"select",options:["","Double-end feed","Single-end feed","Standby"]},{k:"earth",label:"Station / ocean ground",type:"select",options:["","Ocean ground","Station ground"]},...readingTail],
+  cols:[dcol,scol,{k:"voltage",label:"Voltage (V)"},{k:"current",label:"Current (mA)"},{k:"mode",label:"Feed mode"},{k:"earth",label:"Ground"},stcol,{k:"recordedBy",label:"Recorded by"}],sort:byDateDesc("date")},
+ env:{title:"room reading",fields:[...readingBase,{k:"room",label:"Room",type:"select",options:["PR","DH"],req:1,hint:"PR = Power Room, DH = Data Host Room"},{k:"temp",label:"Temperature (°C)",type:"number"},{k:"hum",label:"Humidity (%)",type:"number"},{k:"recordedBy",label:"Recorded by",type:"select",options:staffNames},{k:"notes",label:"Notes",type:"textarea",full:1}],sort:byDateDesc("date")},
+ ups:{title:"UPS reading",fields:[...readingBase,{k:"inputV",label:"Input voltage (V)",type:"number"},{k:"outputV",label:"Output voltage (V)",type:"number"},{k:"load",label:"Load (%)",type:"number"},{k:"battery",label:"Battery capacity (%)",type:"number"},{k:"backup",label:"Backup time (min)",type:"number"},{k:"mode",label:"Working mode",type:"select",options:["","Normal (mains)","Battery","Bypass"]},...readingTail],
+  cols:[dcol,scol,{k:"inputV",label:"Input V"},{k:"outputV",label:"Output V"},{k:"load",label:"Load %"},{k:"battery",label:"Battery %"},{k:"backup",label:"Backup min"},{k:"mode",label:"Mode"},stcol,{k:"recordedBy",label:"Recorded by"}],sort:byDateDesc("date")},
+ rectifier:{title:"rectifier reading",fields:[...readingBase,{k:"acV",label:"AC input voltage (V)",type:"number"},{k:"dcV",label:"DC output voltage (V)",type:"number"},{k:"loadA",label:"Load current (A)",type:"number"},{k:"battA",label:"Battery current (A)",type:"number"},{k:"modules",label:"Rectifier modules working",type:"number"},...readingTail],
+  cols:[dcol,scol,{k:"acV",label:"AC in V"},{k:"dcV",label:"DC out V"},{k:"loadA",label:"Load A"},{k:"battA",label:"Battery A"},{k:"modules",label:"Modules"},stcol,{k:"recordedBy",label:"Recorded by"}],sort:byDateDesc("date")},
+ cienaPorts:{title:"Ciena port",fields:[{k:"slot",label:"Slot",type:"select",options:["6","13"],req:1,hint:"Shelf 6. Slot 6 = Djibouti, slot 13 = Mombasa"},{k:"port",label:"Port (29 to 44)",type:"number",req:1},{k:"status",label:"Status",type:"select",options:["Active","Not active","Unconfirmed"],def:"Active"},{k:"speed",label:"Rate",type:"select",options:["10G","100G","1G",""],def:"10G"},{k:"circuit",label:"Circuit / customer",full:1},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"aid",label:"Shelf-Slot-Port",f:r=>`<b class="mono">6-${esc(r.slot)}-${esc(r.port)}</b>`},{k:"link",label:"Link",f:r=>r.slot=="13"?"Mombasa":"Djibouti"},stcol,{k:"speed",label:"Rate"},{k:"circuit",label:"Circuit / customer"},{k:"notes",label:"Notes",f:r=>`<div class="clip">${esc(r.notes)}</div>`}],
+  sort:(a,b)=>(+a.slot-+b.slot)||(+a.port-+b.port)},
+ devicePorts:portSchema("port",["100G","10G","1G"],true),
+ vlans:{title:"VLAN",fields:[{k:"device",label:"Switch name",req:1},{k:"vlanId",label:"VLAN ID",type:"number",req:1},{k:"name",label:"VLAN name"},{k:"subnet",label:"Subnet"},{k:"ports",label:"Member ports",full:1},{k:"purpose",label:"Purpose",full:1}],
+  cols:[{k:"device",label:"Switch",f:r=>`<b>${esc(r.device)}</b>`},{k:"vlanId",label:"VLAN",f:r=>`<span class="mono">${esc(r.vlanId)}</span>`},{k:"name",label:"Name"},{k:"subnet",label:"Subnet",f:r=>`<span class="mono">${dash(r.subnet)}</span>`},{k:"ports",label:"Ports"},{k:"purpose",label:"Purpose"}],sort:(a,b)=>String(a.device).localeCompare(String(b.device))||(+a.vlanId-+b.vlanId)},
+ devices:{title:"device",fields:[{k:"name",label:"Device name",req:1},{k:"type",label:"Type",type:"select",options:["Ciena transport","Cisco router","Firewall","Planet switch","Cisco switch","Tejas","Server","UPS","Rectifier","PFE","Cooling","NVR / CCTV","Other"]},{k:"vendor",label:"Vendor"},{k:"model",label:"Model"},{k:"serial",label:"Serial number"},{k:"mgmtIp",label:"Management IP"},
+   {k:"room",label:"Room / place",type:"select",options:["Data Host Room (DH)","Power Room (PR)","NOC office","Office block","Generator hall","Outdoor","Other"]},{k:"rack",label:"Rack"},{k:"unit",label:"Rack unit (U)"},{k:"status",label:"Status",type:"select",options:["Active","Not active","Spare","Faulty","Decommissioned"],def:"Active"},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"name",label:"Device",f:r=>`<b>${esc(r.name)}</b><div class="hint">${esc([r.vendor,r.model].filter(Boolean).join(" "))}</div>`},{k:"type",label:"Type"},{k:"room",label:"Room / place"},{k:"rack",label:"Rack",f:r=>r.rack?esc(r.rack)+(r.unit?` <span class="hint">U${esc(r.unit)}</span>`:""):"—"},{k:"mgmtIp",label:"Mgmt IP",f:r=>`<span class="mono">${dash(r.mgmtIp)}</span>`},{k:"serial",label:"Serial",f:r=>`<span class="mono">${dash(r.serial)}</span>`},stcol],
+  sort:(a,b)=>String(a.room||"").localeCompare(String(b.room||""))||String(a.rack||"").localeCompare(String(b.rack||""),undefined,{numeric:true})||String(a.name).localeCompare(String(b.name))},
+ ips:{title:"IP address",fields:[{k:"address",label:"IP address / subnet",req:1},{k:"type",label:"Type",type:"select",options:["Public","Private"],req:1,def:"Private"},{k:"mask",label:"Mask / prefix"},{k:"gateway",label:"Gateway"},{k:"device",label:"Device / interface"},{k:"vlan",label:"VLAN"},{k:"status",label:"Status",type:"select",options:["In use","Free","Reserved"],def:"In use"},{k:"purpose",label:"Purpose / customer",full:1},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"address",label:"Address",f:r=>`<b class="mono">${esc(r.address)}${r.mask?"/"+esc(String(r.mask).replace(/^\//,"")):""}</b>`},{k:"type",label:"Type",f:r=>pill(r.type,r.type==="Public"?"warn":"info")},{k:"device",label:"Device / interface"},{k:"vlan",label:"VLAN"},{k:"gateway",label:"Gateway",f:r=>`<span class="mono">${dash(r.gateway)}</span>`},{k:"purpose",label:"Purpose"},stcol],
+  sort:(a,b)=>String(a.type).localeCompare(String(b.type))||String(a.address).localeCompare(String(b.address),undefined,{numeric:true})},
+ incidents:{title:"incident",fields:[{k:"start",label:"Started",type:"datetime-local",req:1},{k:"end",label:"Restored",type:"datetime-local"},{k:"type",label:"Type",type:"select",options:["Internet failure","Internet traffic down","Power failure","Human error","Fiber cut","Equipment fault","Other"],req:1},{k:"status",label:"Status",type:"select",options:["Open","In progress","Resolved"],def:"Open"},
+   {k:"title",label:"Incident",req:1,full:1},{k:"affected",label:"Affected links / customers",full:1},{k:"cause",label:"Root cause",type:"textarea",full:1},{k:"action",label:"Action taken",type:"textarea",full:1},{k:"reportedBy",label:"Reported by",type:"select",options:staffNames},{k:"handledBy",label:"Handled by",type:"select",options:staffNames}],
+  cols:[{k:"start",label:"Started",f:r=>`<b>${fdt(r.start)}</b>`},{k:"type",label:"Type",f:r=>pill(r.type,r.type==="Human error"?"warn":r.type==="Power failure"?"info":"bad")},{k:"title",label:"Incident",f:r=>`<b>${esc(r.title)}</b><div class="hint clip">${esc(r.affected||"")}</div>`},{k:"dur",label:"Duration",f:r=>dur(r)},{k:"cause",label:"Root cause",f:r=>`<div class="clip">${dash(r.cause)}</div>`},{k:"action",label:"Action taken",f:r=>`<div class="clip">${dash(r.action)}</div>`},stcol],sort:byDateDesc("start")},
+ cameras:{title:"camera",fields:[{k:"name",label:"Camera name",req:1},{k:"channel",label:"NVR channel"},{k:"ip",label:"IP address"},{k:"location",label:"Location"},{k:"status",label:"Status",type:"select",options:["Active","Not active"],def:"Active"},{k:"checked",label:"Last checked",type:"date",def:todayIso},{k:"notes",label:"Notes / fault",type:"textarea",full:1}],
+  cols:[{k:"channel",label:"Ch",f:r=>`<span class="mono">${dash(r.channel)}</span>`},{k:"name",label:"Camera",f:r=>`<b>${esc(r.name)}</b>`},{k:"location",label:"Location"},{k:"ip",label:"IP",f:r=>`<span class="mono">${dash(r.ip)}</span>`},stcol,{k:"checked",label:"Last checked",f:r=>fd(r.checked)},{k:"notes",label:"Notes",f:r=>`<div class="clip">${esc(r.notes)}</div>`}],
+  sort:(a,b)=>String(a.channel||"").localeCompare(String(b.channel||""),undefined,{numeric:true})||String(a.name).localeCompare(String(b.name))},
+ activities:{title:"activity",fields:[{k:"title",label:"Activity",req:1,full:1},{k:"category",label:"Category",type:"select",options:["Maintenance","Installation","Network change","Vendor / customer visit","Reporting","Other"]},{k:"assignee",label:"Owner",type:"select",options:staffNames},{k:"start",label:"Start date",type:"date",def:todayIso},{k:"due",label:"Due date",type:"date"},{k:"status",label:"Status",type:"select",options:["Pending","In progress","Completed"],def:"Pending"},{k:"completed",label:"Completed on",type:"date"},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"title",label:"Activity",f:r=>`<b>${esc(r.title)}</b><div class="hint">${esc(r.category||"")}</div>`},{k:"assignee",label:"Owner"},{k:"start",label:"Start",f:r=>fd(r.start)},{k:"due",label:"Due",f:r=>dueCell(r,"Completed")},stcol,{k:"completed",label:"Completed",f:r=>fd(r.completed)},{k:"notes",label:"Notes",f:r=>`<div class="clip">${esc(r.notes)}</div>`}],
+  sort:(a,b)=>(a.status==="Completed")-(b.status==="Completed")||String(a.due||"9").localeCompare(String(b.due||"9"))},
+ problems:{title:"problem",fields:[{k:"date",label:"Date reported",type:"date",req:1,def:todayIso},{k:"system",label:"System",type:"select",options:SYS,req:1},{k:"title",label:"Problem",req:1,full:1},{k:"details",label:"What happened",type:"textarea",full:1},{k:"cause",label:"Root cause",type:"textarea",full:1},{k:"fix",label:"How it was fixed",type:"textarea",full:1,hint:"Kept as a reference for next time"},
+   {k:"status",label:"Status",type:"select",options:["Open","In progress","Fixed"],def:"Open"},{k:"fixedDate",label:"Fixed on",type:"date"},{k:"reportedBy",label:"Reported by",type:"select",options:staffNames},{k:"fixedBy",label:"Fixed by",type:"select",options:staffNames}],
+  cols:[{k:"date",label:"Date",f:r=>fd(r.date)},{k:"system",label:"System"},{k:"title",label:"Problem",f:r=>`<b>${esc(r.title)}</b><div class="hint clip">${esc(r.details||"")}</div>`},{k:"fix",label:"Fix",f:r=>`<div class="clip">${dash(r.fix)}</div>`},stcol,{k:"fixedBy",label:"Fixed by"}],sort:byDateDesc("date")},
+ replacements:{title:"replaced part",fields:[{k:"date",label:"Date",type:"date",req:1,def:todayIso},{k:"system",label:"System",type:"select",options:SYS,req:1},{k:"faulty",label:"Faulty item",req:1},{k:"serialOld",label:"Faulty serial / part no."},{k:"replacedWith",label:"Replaced with"},{k:"serialNew",label:"New serial / part no."},{k:"qty",label:"Quantity",type:"number",def:1},{k:"doneBy",label:"Done by",type:"select",options:staffNames},{k:"reason",label:"Reason / fault",type:"textarea",full:1}],
+  cols:[{k:"date",label:"Date",f:r=>fd(r.date)},{k:"system",label:"System"},{k:"faulty",label:"Faulty item",f:r=>`<b>${esc(r.faulty)}</b><div class="hint mono">${esc(r.serialOld||"")}</div>`},{k:"replacedWith",label:"Replaced with",f:r=>`${dash(r.replacedWith)}<div class="hint mono">${esc(r.serialNew||"")}</div>`},{k:"qty",label:"Qty"},{k:"reason",label:"Reason",f:r=>`<div class="clip">${esc(r.reason)}</div>`},{k:"doneBy",label:"Done by"}],sort:byDateDesc("date")},
+ manholes:{title:"manhole record",fields:[{k:"manhole",label:"Manhole",req:1,hint:"e.g. MH-01"},{k:"year",label:"Year",type:"number",req:1,def:()=>today().getFullYear()},{k:"location",label:"Location / route section",full:1},{k:"inspected",label:"Inspected on",type:"date"},{k:"condition",label:"Condition found",type:"select",options:["","Good","Water inside","Cover damaged","Duct damaged","Sand / debris","Other"]},{k:"status",label:"Repair status",type:"select",options:["Pending","In progress","Repaired","No repair needed"],def:"Pending"},{k:"repaired",label:"Repaired on",type:"date"},{k:"doneBy",label:"Done by"},{k:"work",label:"Repair work done",type:"textarea",full:1}],
+  cols:[{k:"manhole",label:"Manhole",f:r=>`<b>${esc(r.manhole)}</b>`},{k:"year",label:"Year"},{k:"location",label:"Location"},{k:"inspected",label:"Inspected",f:r=>fd(r.inspected)},{k:"condition",label:"Condition"},stcol,{k:"repaired",label:"Repaired",f:r=>fd(r.repaired)},{k:"work",label:"Work done",f:r=>`<div class="clip">${esc(r.work)}</div>`}],
+  sort:(a,b)=>(+b.year-+a.year)||String(a.manhole).localeCompare(String(b.manhole),undefined,{numeric:true})},
+ anticorrosion:{title:"anti-corrosion job",fields:[{k:"area",label:"Area / item",req:1,hint:"e.g. Roof steel, doors, cable trays, AC outdoor units"},{k:"round",label:"Round",hint:"e.g. 2026 first half"},{k:"start",label:"Started",type:"date",def:todayIso},{k:"completed",label:"Completed",type:"date"},{k:"status",label:"Status",type:"select",options:["Planned","In progress","Completed"],def:"Planned"},{k:"nextDue",label:"Next due",type:"date"},{k:"doneBy",label:"Team / contractor"},{k:"materials",label:"Paint / materials used"},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"area",label:"Area",f:r=>`<b>${esc(r.area)}</b>`},{k:"round",label:"Round"},{k:"start",label:"Started",f:r=>fd(r.start)},{k:"completed",label:"Completed",f:r=>fd(r.completed)},stcol,{k:"nextDue",label:"Next due",f:r=>r.nextDue?(parseD(r.nextDue)<today()?pill(fd(r.nextDue),"bad"):fd(r.nextDue)):"—"},{k:"doneBy",label:"Team"}],sort:byDateDesc("start")},
+ inventory:{title:"item",fields:[{k:"item",label:"Item description",req:1,full:1},{k:"kind",label:"Register",type:"select",options:["Store","Spare"],req:1},{k:"vendor",label:"Vendor"},{k:"area",label:"Area",type:"select",options:["Space Area A","Space Area B","Shelves Area","Other"]},{k:"bay",label:"Bay"},{k:"level",label:"Level"},{k:"stockIn",label:"Stock in",type:"number",def:1},{k:"dateIn",label:"Date in",type:"date"},{k:"stockOut",label:"Stock out",type:"number"},{k:"dateOut",label:"Date out",type:"date"},{k:"minQty",label:"Reorder when below",type:"number"},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"item",label:"Item",f:r=>`<b>${esc(r.item)}</b>`},{k:"vendor",label:"Vendor"},{k:"loc",label:"Location",f:r=>esc(r.area||"")+(r.bay?` <span class="hint">Bay ${esc(r.bay)}${r.level?", level "+esc(r.level):""}</span>`:"")},{k:"stockIn",label:"In"},{k:"stockOut",label:"Out",f:r=>r.stockOut?esc(r.stockOut)+(r.dateOut?`<div class="hint">${fd(r.dateOut)}</div>`:""):"—"},
+   {k:"rem",label:"Remaining",f:r=>`<b>${remain(r)}</b>`},{k:"st",label:"Status",f:r=>{const q=remain(r);return q<=0?pill("Out of stock","bad"):r.minQty&&q<+r.minQty?pill("Low","warn"):pill("In stock","ok")}}],
+  sort:(a,b)=>String(a.area||"").localeCompare(String(b.area||""))||String(b.bay||"").localeCompare(String(a.bay||""),undefined,{numeric:true})||String(a.level||"").localeCompare(String(b.level||""))||String(a.item).localeCompare(String(b.item))},
+ clearances:{title:"clearance",fields:[{k:"holder",label:"Staff name / vehicle",req:1},{k:"type",label:"Type",type:"select",options:["Staff","Vehicle"],req:1,def:"Staff"},{k:"ref",label:"Pass no. / plate no."},{k:"office",label:"Issued by",def:"AMISOM office"},{k:"issued",label:"Issued / renewed on",type:"date"},{k:"expires",label:"Expires on",type:"date",hint:"Leave empty to use 3 months after issue"},{k:"submitted",label:"Renewal submitted on",type:"date"},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"holder",label:"Holder",f:r=>`<b>${esc(r.holder)}</b>`},{k:"type",label:"Type",f:r=>pill(r.type,r.type==="Vehicle"?"info":"neutral")},{k:"ref",label:"Pass / plate",f:r=>`<span class="mono">${dash(r.ref)}</span>`},{k:"issued",label:"Issued",f:r=>fd(r.issued)},{k:"exp",label:"Expires",f:r=>fd(clr(r).exp)},{k:"st",label:"Status",f:clrPill},{k:"submitted",label:"Renewal submitted",f:r=>fd(r.submitted)}],
+  sort:(a,b)=>String(a.type).localeCompare(String(b.type))||String(a.holder).localeCompare(String(b.holder))},
+ leave:{title:"staff leave record",fields:[{k:"name",label:"Staff name",req:1},{k:"job",label:"Job title"},{k:"mobile",label:"Work mobile"},{k:"place",label:"Work place",def:"CLS-MOG"},{k:"joined",label:"Joining date",type:"date"},{k:"sn",label:"S/N",type:"number"},{k:"forward",label:"Leave carried forward",type:"number",def:0},{k:"initial",label:"Leave entitlement this year",type:"number",def:30},{k:"taken",label:"Leave taken this year",type:"number",def:0}],
+  cols:[{k:"sn",label:"S/N"},{k:"name",label:"Staff",f:r=>`<b>${esc(r.name)}</b><div class="hint">${esc(r.job||"")}</div>`},{k:"mobile",label:"Work mobile",f:r=>`<span class="mono">${dash(r.mobile)}</span>`},{k:"joined",label:"Joined",f:r=>fd(r.joined)},{k:"forward",label:"Forward",f:r=>num(r.forward)||"—"},{k:"initial",label:"Entitled"},{k:"taken",label:"Taken",f:r=>{const t=(num(r.forward)||0)+(num(r.initial)||0);return `${num(r.taken)||0}<div class="progress"><i style="width:${t?Math.min(100,(num(r.taken)||0)/t*100):0}%"></i></div>`}},
+   {k:"bal",label:"Balance",f:r=>{const b=bal(r);return `<span class="pill ${b<=0?"neutral":b>=15?"warn":"ok"}">${b} days</span>`}}],sort:(a,b)=>(+a.sn||99)-(+b.sn||99)},
+ leavePlan:{title:"leave plan",fields:[{k:"staff",label:"Staff member",type:"select",options:allStaff,req:1},{k:"type",label:"Leave type",type:"select",options:["Annual","Emergency","Unpaid","Other"],def:"Annual"},{k:"from",label:"From",type:"date",req:1},{k:"to",label:"To",type:"date",req:1},{k:"days",label:"Days",type:"number",hint:"Leave empty to count from the dates"},{k:"status",label:"Status",type:"select",options:["Planned","Approved","Taken","Cancelled"],def:"Planned"},{k:"cover",label:"Covered by",type:"select",options:allStaff},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"staff",label:"Staff",f:r=>`<b>${esc(r.staff)}</b>`},{k:"type",label:"Type"},{k:"from",label:"From",f:r=>fd(r.from)},{k:"to",label:"To",f:r=>fd(r.to)},{k:"days",label:"Days",f:r=>pdays(r)},stcol,{k:"cover",label:"Covered by"}],sort:(a,b)=>String(a.from||"").localeCompare(String(b.from||""))},
+ staff:{title:"staff member",fields:[{k:"name",label:"Full name",req:1},{k:"role",label:"Role",type:"select",options:["CLS Manager","NOC Member","Other"]},{k:"reportsTo",label:"Reports to",type:"select",options:staffNames},{k:"phone",label:"Work mobile"},{k:"order",label:"Sort order",type:"number"},{k:"duties",label:"Main duties",type:"textarea",full:1}],sort:(a,b)=>(a.order||99)-(b.order||99)},
+ tasks:{title:"task",fields:[{k:"title",label:"Task",req:1,full:1},{k:"assignee",label:"Assigned to",type:"select",options:staffNames,req:1},{k:"area",label:"Area",type:"select",options:["",...SYS,"Reporting","Facility"]},{k:"assigned",label:"Assigned on",type:"date",def:todayIso},{k:"due",label:"Due date",type:"date"},{k:"priority",label:"Priority",type:"select",options:["Low","Normal","High","Urgent"],def:"Normal"},{k:"status",label:"Status",type:"select",options:["To do","In progress","Done"],def:"To do"},{k:"completed",label:"Completed on",type:"date"},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"title",label:"Task",f:r=>`<b>${esc(r.title)}</b><div class="hint">${esc(r.area||"")}</div>`},{k:"assignee",label:"Assigned to"},{k:"due",label:"Due",f:r=>dueCell(r,"Done")},{k:"priority",label:"Priority",f:r=>pill(r.priority,TONES[r.priority]||"info")},stcol,{k:"notes",label:"Notes",f:r=>`<div class="clip">${esc(r.notes)}</div>`}],
+  sort:(a,b)=>(a.status==="Done")-(b.status==="Done")||String(a.due||"9").localeCompare(String(b.due||"9"))}
+};
+function dueCell(r,done){if(!r.due)return "—";return r.status!==done&&parseD(r.due)<today()?pill(fd(r.due)+", overdue","bad"):fd(r.due)}
+function dur(r){if(!r.start||!r.end)return r.start&&r.status!=="Resolved"?pill("Ongoing","bad"):"—";const m=Math.round((new Date(r.end)-new Date(r.start))/6e4);if(!(m>=0))return "—";return m<60?m+" min":Math.floor(m/60)+" h "+(m%60)+" min"}
+function pdays(r){if(num(r.days)!=null)return num(r.days);const a=parseD(r.from),b=parseD(r.to);return a&&b?diff(a,b)+1:"—"}
+/* ---------- generic table ---------- */
+const CTX={};const searchQ={};
+function table(key,col,o){o=o||{};CTX[key]={col,preset:o.preset||{},filter:o.filter,cols:o.cols||SCHEMAS[col].cols,title:o.title||SCHEMAS[col].title};
+  return `<div class="tools"><input class="search" id="q-${key}" type="search" placeholder="Search" data-search="${key}" value="${esc(searchQ[key]||"")}"><button class="btn" data-add="${key}">+ Add ${esc(CTX[key].title)}</button>${downloads?`<button class="btn ghost" data-csv="${key}">Export CSV</button>`:""}<span class="count" id="cnt-${key}"></span></div><div class="tablewrap" id="tbl-${key}">${tbody(key)}</div>`}
+function rowsFor(key){const c=CTX[key],S=SCHEMAS[c.col];let rows=[...data[c.col]];if(c.filter)rows=rows.filter(c.filter);rows.sort(S.sort||(()=>0));const q=(searchQ[key]||"").toLowerCase();if(q)rows=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q));return rows}
+function tbody(key){const c=CTX[key],rows=rowsFor(key);
+  if(!rows.length)return `<div class="empty">${searchQ[key]?"No matches. Try a different search.":"Nothing recorded yet. Use “Add "+esc(c.title)+"” to create the first entry."}</div>`;
+  return `<table><thead><tr>${c.cols.map(x=>`<th>${esc(x.label)}</th>`).join("")}<th></th></tr></thead><tbody>${rows.map(r=>`<tr>${c.cols.map(x=>`<td>${x.f?x.f(r):dash(r[x.k])}</td>`).join("")}<td class="act"><button class="icon-btn" data-edit="${c.col}" data-id="${r.id}" aria-label="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.500 3.500a2.100 2.100 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button> <button class="icon-btn" data-del="${c.col}" data-id="${r.id}" aria-label="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button></td></tr>`).join("")}</tbody></table>`}
+function head(t,sub,btn){return `<div class="head"><div><h2 class="title acc">${t}</h2><p class="sub">${sub}</p></div>${btn||""}</div>`}
+function stat(k,v,d,c,go){return `<div class="card stat" ${c?`style="--c:${c}"`:""} ${go?`data-goto="${go}" tabindex="0" role="button"`:""}><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d||"&nbsp;"}</div></div>`}
+
+/* ---------- charts ---------- */
+function lineChart(labels,series,o){o=o||{};const W=680,H=250,pl=40,pr=14,pt=14,pb=30;
+  const vals=series.flatMap(s=>s.values).filter(v=>v!=null);if(!vals.length||!labels.length)return `<div class="empty">Readings will be charted here once recorded.</div>`;
+  let mn=o.min!=null?o.min:Math.min(...vals),mx=o.max!=null?o.max:Math.max(...vals);if(o.min==null){const pad=Math.max(1,(mx-mn)*.2);mn=Math.floor(mn-pad);mx=Math.ceil(mx+pad)}if(mx===mn)mx=mn+1;
+  const x=i=>pl+(labels.length>1?i*(W-pl-pr)/(labels.length-1):(W-pl-pr)/2),y=v=>pt+(H-pt-pb)*(1-(v-mn)/(mx-mn));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.title||"Chart")}">`;
+  for(let i=0;i<=4;i++){const v=mn+(mx-mn)*i/4,yy=y(v);s+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${yy}" y2="${yy}"/><text class="ax" x="${pl-6}" y="${yy+4}" text-anchor="end">${Math.round(v*10)/10}${o.unit||""}</text>`}
+  if(o.limit!=null&&o.limit<mx&&o.limit>mn)s+=`<line x1="${pl}" x2="${W-pr}" y1="${y(o.limit)}" y2="${y(o.limit)}" style="stroke:var(--bad)" stroke-dasharray="5 4"/><text class="ax" x="${W-pr}" y="${y(o.limit)-5}" text-anchor="end" style="fill:var(--bad)">${esc(o.limitLabel||"limit")} ${o.limit}${o.unit||""}</text>`;
+  const step=Math.ceil(labels.length/10);labels.forEach((l,i)=>{if(i%step===0)s+=`<text class="ax" x="${x(i)}" y="${H-9}" text-anchor="middle">${esc(l)}</text>`});
+  series.forEach(se=>{const pts=se.values.map((v,i)=>v==null?null:[x(i),y(v)]).filter(Boolean);if(!pts.length)return;
+    if(series.length===1)s+=`<path d="M${pts.map(p=>p.join(",")).join("L")}L${pts[pts.length-1][0]},${H-pb}L${pts[0][0]},${H-pb}Z" style="fill:${se.color};opacity:.12"/>`;
+    s+=`<path d="M${pts.map(p=>p.join(",")).join("L")}" fill="none" style="stroke:${se.color}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+    pts.forEach((p,i)=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="${i===pts.length-1?4.5:3}" style="fill:${se.color};stroke:var(--card)" stroke-width="1.5"><title>${esc(se.name)}</title></circle>`)});
+  return `<div class="chart">${s}</svg></div><div class="legend">${series.map(se=>`<span><i style="background:${se.color}"></i>${esc(se.name)}</span>`).join("")}</div>`}
+
+/* ---------- merged & new record types ---------- */
+const GENS=["Generator 1","Generator 2","Generator 3"],GENS_ALL=[...GENS,"All generators"];
+const BIG=40,SMALL=20;
+const AREAS=["Generator 1","Generator 2","Generator 3","Generator hall","Generator room gate","Power channel (cables)","Exhaust pipe","Outdoor fan","Fuel tanks","Water compressor","Changeover racks","CLS DC entrance gates","Main entrance gate","Staff housing containers","Office block AC units","Office block entrance gate"];
+const UNI_ITEMS=["Coverall","Shirt","T-shirt","Trousers","Jacket","Safety boots","Helmet","Gloves","Ear protection","Reflective vest","Cap / Beret","Belt","ID badge","Raincoat"];
+const SHIFT_KEYS=["","A","B","C","D","B & C"];
+const GATES=["Airport main gate (AAIA)","Airport cargo gate","DARE1 site gate","DARE1 server hall door"];
+const secNames=()=>byDept("Security").map(s=>s.name);
+const deptCell=n=>{const d=deptOf(n);return d?`<span class="tag" style="--accent:${DHEX[d]}">${esc(d)}</span>`:""};
+Object.assign(SCHEMAS,{
+ staff:{title:"staff member",fields:[{k:"name",label:"Full name",req:1},{k:"dept",label:"Department",type:"select",options:DEPTS,req:1,def:"NOC"},{k:"role",label:"Role / job title"},
+   {k:"reportsTo",label:"Reports to",type:"select",options:()=>people().map(s=>s.name)},{k:"phone",label:"Work mobile"},{k:"shift",label:"Shift",type:"select",options:SHIFT_KEYS,hint:"From the staff schedule"},
+   {k:"order",label:"Sort order",type:"number"},{k:"duties",label:"Main duties",type:"textarea",full:1}],
+  cols:[{k:"name",label:"Name",f:r=>`<span style="display:flex;gap:9px;align-items:center">${av(r.name,r.dept,28)}<b>${esc(r.name)}</b></span>`},{k:"dept",label:"Department",f:r=>`<span class="tag" style="--accent:${DHEX[r.dept]||"#64748B"}">${dash(r.dept)}</span>`},{k:"role",label:"Role"},
+   {k:"reportsTo",label:"Reports to"},{k:"shift",label:"Shift",f:r=>r.shift?`<b class="mono">${esc(r.shift)}</b>`:"—"},{k:"phone",label:"Work mobile",f:r=>`<span class="mono">${dash(r.phone)}</span>`}],sort:staffSort},
+ tasks:{title:"task",fields:[{k:"title",label:"Task",req:1,full:1},{k:"assignee",label:"Assigned to",type:"select",options:staffNames,req:1},{k:"area",label:"Area / system",type:"select",options:["",...SYS,"Patrol","Reporting","Facility"]},
+   {k:"assigned",label:"Assigned on",type:"date",def:todayIso},{k:"due",label:"Due date",type:"date"},{k:"priority",label:"Priority",type:"select",options:["Low","Normal","High","Urgent"],def:"Normal"},
+   {k:"status",label:"Status",type:"select",options:["To do","In progress","Done"],def:"To do"},{k:"completed",label:"Completed on",type:"date"},{k:"rating",label:"Performance rating",type:"select",options:["","1","2","3","4","5"],hint:"1 poor, 5 excellent"},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"title",label:"Task",f:r=>`<b>${esc(r.title)}</b><div class="hint">${esc(r.area||"")}</div>`},{k:"assignee",label:"Assigned to",f:r=>`${dash(r.assignee)}<div>${deptCell(r.assignee)}</div>`},{k:"due",label:"Due",f:r=>dueCell(r,"Done")},
+   {k:"priority",label:"Priority",f:r=>pill(r.priority,TONES[r.priority]||"info")},stcol,{k:"rating",label:"Rating",f:r=>r.rating?`<span class="stars">${"★".repeat(+r.rating)}</span>`:"—"}],
+  sort:(a,b)=>(a.status==="Done")-(b.status==="Done")||String(a.due||"9").localeCompare(String(b.due||"9"))},
+ fuel:{title:"fuel cycle",fields:[{k:"order",label:"Fuel ordered",type:"date"},{k:"received",label:"Fuel received",type:"date",req:1},{k:"small1",label:"First transfer to small tank",type:"date",hint:"Big tank 40 → 20 (20 in reserve)"},
+   {k:"small2",label:"Second transfer to small tank",type:"date",hint:"Big tank empty → order fuel"},{k:"barrels",label:"Barrels delivered",type:"number",def:40},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"order",label:"Ordered",f:r=>fd(r.order)},{k:"received",label:"Received",f:r=>`<b>${fd(r.received)}</b>`},
+   {k:"small1",label:"1st transfer",f:r=>r.small1?fd(r.small1)+`<div class="hint">Big tank 20 left</div>`:pill("Big tank full","info")},
+   {k:"small2",label:"2nd transfer (order)",f:r=>r.small2?fd(r.small2)+(r.small1?`<div class="hint">${diff(parseD(r.small1),parseD(r.small2))} days after 1st</div>`:""):(r.small1?pill("20 in reserve","warn"):"—")},
+   {k:"total",label:"Lasted",f:r=>r.small2?`<b>${diff(parseD(r.received),parseD(r.small2))} days</b>`:"—"},
+   {k:"rate",label:"Barrels / day",f:r=>r.small2?((+r.barrels||40)/Math.max(1,diff(parseD(r.received),parseD(r.small2)))).toFixed(2):"—"}],
+  sort:(a,b)=>String(b.received||"").localeCompare(String(a.received||""))},
+ filterChanges:{title:"filter change",fields:[{k:"date",label:"Date changed",type:"date",req:1,def:todayIso},{k:"generator",label:"Generator",type:"select",options:GENS,req:1},
+   {k:"filters",label:"Filters changed",type:"multi",options:["Oil","Fuel","Air","Water separator","Coolant"],full:1},{k:"runHours",label:"Run hours",type:"number"},{k:"doneBy",label:"Done by",type:"select",options:()=>byDept("Generator").map(s=>s.name)},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"date",label:"Date",f:r=>fd(r.date)},{k:"generator",label:"Generator"},{k:"filters",label:"Filters",f:r=>(r.filters||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")||"—"},{k:"runHours",label:"Run hours",f:r=>num(r.runHours)?r.runHours:"—"},{k:"doneBy",label:"Done by"}],
+  sort:(a,b)=>String(b.date||"").localeCompare(String(a.date||""))},
+ filterOrders:{title:"filter order",fields:[{k:"orderDate",label:"Order date",type:"date",req:1,def:todayIso},{k:"receivedDate",label:"Received date",type:"date"},{k:"items",label:"Items ordered",type:"textarea",full:1,hint:"e.g. 6 oil, 6 fuel, 6 air filters"},{k:"supplier",label:"Supplier"},{k:"notes",label:"Notes"}],
+  cols:[{k:"orderDate",label:"Ordered",f:r=>fd(r.orderDate)},{k:"receivedDate",label:"Received",f:r=>r.receivedDate?fd(r.receivedDate):pill("Awaiting","warn")},{k:"items",label:"Items",f:r=>`<div class="clip">${esc(r.items)}</div>`},{k:"supplier",label:"Supplier"}],
+  sort:(a,b)=>String(b.orderDate||"").localeCompare(String(a.orderDate||""))},
+ genSpares:{title:"generator spare",fields:[{k:"item",label:"Item",req:1},{k:"partNo",label:"Part number"},{k:"category",label:"Category",type:"select",options:["Filter","Belt","Electrical","Engine","Cooling","Fuel system","Battery","Other"]},
+   {k:"generator",label:"For",type:"select",options:GENS_ALL,def:"All generators"},{k:"qty",label:"Quantity in stock",type:"number",def:0},{k:"minQty",label:"Reorder when below",type:"number",def:1},{k:"location",label:"Storage location",def:"Office block store"},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"item",label:"Item",f:r=>`<b>${esc(r.item)}</b><div class="hint">${esc(r.partNo||"")}</div>`},{k:"category",label:"Category"},{k:"generator",label:"For"},{k:"qty",label:"In stock",f:r=>qtyCell(r)},{k:"minQty",label:"Min"},
+   {k:"st",label:"Status",f:r=>{const q=+r.qty||0;return q<=0?pill("Out of stock","bad"):q<(+r.minQty||0)?pill("Low","warn"):pill("In stock","ok")}},{k:"location",label:"Location"}],
+  sort:(a,b)=>String(a.category||"").localeCompare(String(b.category||""))||String(a.item).localeCompare(String(b.item))},
+ painting:{title:"painting round",fields:[{k:"round",label:"Round",req:1,hint:"e.g. Second half of 2026"},{k:"startDate",label:"Started",type:"date",def:todayIso},{k:"areas",label:"Areas completed",type:"multi",options:AREAS,full:1},
+   {k:"completedDate",label:"All areas finished on",type:"date"},{k:"doneBy",label:"Team / contractor"},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"round",label:"Round",f:r=>`<b>${esc(r.round)}</b>`},{k:"startDate",label:"Started",f:r=>fd(r.startDate)},{k:"completedDate",label:"Finished",f:r=>r.completedDate?fd(r.completedDate):pill("In progress","warn")},
+   {k:"areas",label:"Areas ticked",f:r=>`${(r.areas||[]).length} of ${AREAS.length}<div class="progress" style="--c:var(--accent);width:120px"><i style="width:${Math.round((r.areas||[]).length/AREAS.length*100)}%"></i></div>`},{k:"doneBy",label:"Team"},{k:"notes",label:"Notes",f:r=>`<div class="clip">${esc(r.notes)}</div>`}],
+  sort:(a,b)=>String(b.startDate||"").localeCompare(String(a.startDate||""))},
+ uniforms:{title:"uniform order",fields:[{k:"staff",label:"Staff member",type:"select",options:staffNames,req:1},{k:"orderDate",label:"Order date",type:"date",req:1,def:todayIso},{k:"items",label:"Items",type:"multi",options:UNI_ITEMS,full:1},
+   {k:"size",label:"Size"},{k:"qty",label:"Sets",type:"number",def:1},{k:"receivedDate",label:"Received",type:"date"},{k:"condition",label:"Condition",type:"select",options:["","New","Good","Worn","Damaged","Lost"]},{k:"notes",label:"Notes",type:"textarea",full:1}],
+  cols:[{k:"staff",label:"Staff",f:r=>`<b>${esc(r.staff)}</b><div>${deptCell(r.staff)}</div>`},{k:"orderDate",label:"Ordered",f:r=>fd(r.orderDate)},{k:"items",label:"Items",f:r=>(r.items||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")||"—"},
+   {k:"size",label:"Size",f:r=>`<span class="mono">${dash(r.size)}</span>`},{k:"qty",label:"Sets"},{k:"receivedDate",label:"Received",f:r=>r.receivedDate?fd(r.receivedDate):pill("Awaiting","warn")},{k:"condition",label:"Condition",f:r=>r.condition?pill(r.condition,r.condition==="Damaged"||r.condition==="Lost"?"bad":r.condition==="Worn"?"warn":"ok"):"—"}],
+  sort:(a,b)=>String(b.orderDate||"").localeCompare(String(a.orderDate||""))||String(a.staff).localeCompare(String(b.staff))},
+ gateLog:{title:"gate entry",fields:[{k:"name",label:"Person or vehicle",req:1,full:1,hint:"e.g. Vendor engineer, diesel tanker"},{k:"company",label:"Company"},{k:"type",label:"Type",type:"select",options:["Visitor","Contractor","Vendor engineer","Delivery","Vehicle","CLS staff"],def:"Visitor"},
+   {k:"gate",label:"Gate",type:"select",options:GATES,def:GATES[0]},{k:"date",label:"Date",type:"date",req:1,def:todayIso},{k:"purpose",label:"Purpose of visit",full:1},{k:"plate",label:"Vehicle plate"},{k:"escort",label:"Escort",type:"select",options:()=>staffNames()},
+   {k:"tin",label:"Time in",type:"time"},{k:"tout",label:"Time out",type:"time"},{k:"status",label:"Status",type:"select",options:["Requested","Approved","Denied","Inside","Exited"],def:"Requested"}],
+  cols:[{k:"date",label:"Date",f:r=>fd(r.date)},{k:"name",label:"Person / vehicle",f:r=>`<b>${esc(r.name)}</b><div class="hint">${esc(r.company||"")} · ${esc(r.type||"")}</div>`},{k:"gate",label:"Gate"},{k:"purpose",label:"Purpose",f:r=>`<div class="clip">${dash(r.purpose)}</div>`},
+   {k:"plate",label:"Plate",f:r=>`<span class="mono">${dash(r.plate)}</span>`},{k:"escort",label:"Escort"},{k:"io",label:"In / out",f:r=>`<span class="mono">${esc(r.tin||"—")} / ${esc(r.tout||"—")}</span>`},
+   {k:"status",label:"Status",f:r=>sp(r.status)+(r.status==="Requested"?` <button class="btn sm" style="background:var(--ok)" data-gs="${r.id}:Approved">Approve</button>`:r.status==="Approved"?` <button class="btn sm" data-gs="${r.id}:Inside">Check in</button>`:r.status==="Inside"?` <button class="btn sm" data-gs="${r.id}:Exited">Check out</button>`:"")}],
+  sort:(a,b)=>String(b.date+(b.tin||"")).localeCompare(String(a.date+(a.tin||"")))},
+ secReports:{title:"shift report",fields:[{k:"date",label:"Date",type:"date",req:1,def:todayIso},{k:"shift",label:"Shift",type:"select",options:["A","B","C","D"],def:()=>(curShift("Security")||{}).k||"A"},
+   {k:"member",label:"Reported by",type:"select",options:secNames,req:1},{k:"incidents",label:"Incidents",type:"number",def:0},{k:"summary",label:"Summary",type:"textarea",full:1,req:1,hint:"Patrol times, visitors, anything unusual, hand-over notes"}],
+  cols:[{k:"date",label:"Date",f:r=>`<b>${fd(r.date)}</b>`},{k:"shift",label:"Shift",f:r=>`<b class="mono">${dash(r.shift)}</b>`},{k:"member",label:"Reported by"},{k:"incidents",label:"Incidents",f:r=>+r.incidents?pill(String(r.incidents),"bad"):pill("None","ok")},{k:"summary",label:"Summary",f:r=>`<div style="min-width:240px">${esc(r.summary)}</div>`}],
+  sort:(a,b)=>String(b.date).localeCompare(String(a.date))||String(b.shift).localeCompare(String(a.shift))}
+});
+SCHEMAS.clearances.cols=[{k:"holder",label:"Holder",f:r=>`<b>${esc(r.holder)}</b><div>${r.type==="Vehicle"?"":deptCell(r.holder)}</div>`},{k:"type",label:"Type",f:r=>pill(r.type,r.type==="Vehicle"?"info":"neutral")},{k:"ref",label:"Pass / plate",f:r=>`<span class="mono">${dash(r.ref)}</span>`},{k:"issued",label:"Issued",f:r=>fd(r.issued)},{k:"exp",label:"Expires",f:r=>fd(clr(r).exp)},{k:"st",label:"Status",f:clrPill},{k:"submitted",label:"Renewal submitted",f:r=>fd(r.submitted)}];
+SCHEMAS.clearances.sort=(a,b)=>String(a.type).localeCompare(String(b.type))||DEPTS.indexOf(deptOf(a.holder))-DEPTS.indexOf(deptOf(b.holder))||String(a.holder).localeCompare(String(b.holder));
+SCHEMAS.replacements.cols[1]={k:"system",label:"System / generator"};
+function qtyCell(r){return `<span style="display:inline-flex;align-items:center;gap:6px"><button class="icon-btn" data-qty="-1" data-id="${r.id}" aria-label="Decrease">−</button><b style="min-width:22px;text-align:center">${+r.qty||0}</b><button class="icon-btn" data-qty="1" data-id="${r.id}" aria-label="Increase">+</button></span>`}
+
+/* ---------- generator fuel analytics ---------- */
+function fuelStats(){
+  /* Delivery fills the 40-barrel big tank. 1st transfer: 20 go to the small tank, 20 stay in reserve.
+     2nd transfer: last 20 go over, big tank is empty, fuel is ordered while the small tank runs. */
+  const cyc=[...data.fuel].filter(c=>c.received).sort((a,b)=>a.received.localeCompare(b.received));
+  const spans=[];cyc.forEach((c,i)=>{const prev=cyc[i-1],S1=parseD(c.small1),S2=parseD(c.small2),start=prev&&prev.small2?parseD(prev.small2):null;if(S1&&start)spans.push(diff(start,S1));if(S1&&S2)spans.push(diff(S1,S2))});
+  const recent=spans.slice(-8),avg20=recent.length?recent.reduce((a,b)=>a+b,0)/recent.length:14;
+  const done=cyc.filter(c=>c.small2).map(c=>({c,days:diff(parseD(c.received),parseD(c.small2))}));
+  const avgCycle=done.length?done.slice(-6).reduce((a,b)=>a+b.days,0)/Math.min(6,done.length):avg20*2;
+  const cur=cyc[cyc.length-1]||null,prev=cyc[cyc.length-2]||null,t=today();
+  const st={cur,avg20,avgCycle,perDay:BIG/avgCycle,big:0,small:0,phase:"none",orderDate:null,transferDate:null,runOut:null,cyc,done};
+  st.pendingOrder=data.fuel.find(c=>c.order&&!c.received)||null;
+  if(!cur)return st;
+  const R=parseD(cur.received),S1=parseD(cur.small1),S2=parseD(cur.small2),lvl=from=>Math.max(0,SMALL-SMALL*Math.max(0,diff(from,t))/avg20);
+  if(!S1){const from=prev&&prev.small2?parseD(prev.small2):R;st.phase="full";st.big=BIG;st.small=lvl(from);st.transferDate=addDays(from,Math.round(avg20));st.orderDate=addDays(from,Math.round(avg20*2));st.runOut=addDays(from,Math.round(avg20*3))}
+  else if(!S2){st.phase="reserve";st.big=BIG-SMALL;st.small=lvl(S1);st.orderDate=addDays(S1,Math.round(avg20));st.transferDate=st.orderDate;st.runOut=addDays(S1,Math.round(avg20*2))}
+  else{st.phase="empty";st.big=0;st.small=lvl(S2);st.orderDate=S2;st.runOut=addDays(S2,Math.round(avg20))}
+  st.daysToOrder=diff(t,st.orderDate);st.daysToRunOut=diff(t,st.runOut);return st;
+}
+let tid=0;
+function tankSVG(level,cap,w,h,label,onDark){
+  const pct=Math.max(0,Math.min(1,level/cap)),inner=h-24,fh=inner*pct,col=pct<.2?"#DC2626":pct<.45?"#F59E0B":"#D97706",id="tk"+(++tid),rx=Math.min(22,w/5);
+  const shell=onDark?"rgba(255,255,255,.08)":"var(--soft)",edge=onDark?"rgba(255,255,255,.35)":"var(--line)";
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}: ${level.toFixed(1)} of ${cap} barrels" style="max-width:100%;height:auto">
+   <defs><clipPath id="${id}"><rect x="4" y="12" width="${w-8}" height="${inner}" rx="${rx}"/></clipPath></defs>
+   <rect x="4" y="12" width="${w-8}" height="${inner}" rx="${rx}" style="fill:${shell};stroke:${edge}" stroke-width="2"/>
+   <g clip-path="url(#${id})"><rect x="0" y="${12+inner-fh+5}" width="${w}" height="${fh}" fill="${col}"/>
+    ${fh>2?`<path class="wave" d="M0 ${12+inner-fh+5} q ${w/8} -8 ${w/4} 0 t ${w/4} 0 t ${w/4} 0 t ${w/4} 0 t ${w/4} 0 V ${h} H 0 Z" fill="${col}" opacity=".85"/>`:""}</g>
+   ${[.25,.5,.75].map(p=>`<line x1="${w-18}" x2="${w-6}" y1="${12+inner*(1-p)}" y2="${12+inner*(1-p)}" style="stroke:${edge}" stroke-width="1.5"/>`).join("")}
+   <rect x="${w/2-10}" y="2" width="20" height="10" rx="3" style="fill:${edge}"/>
+   <text x="${w/2}" y="${12+inner/2+8}" text-anchor="middle" font-family="Outfit,system-ui" font-weight="700" font-size="${w>110?24:18}" style="fill:${pct>.5||onDark?"#fff":"var(--ink)"}">${Math.round(pct*100)}%</text></svg>`;
+}
+function cycleChart(st){
+  const rows=st.done.slice(-10);if(!rows.length)return `<div class="empty">Finished fuel cycles will appear here.</div>`;
+  const W=Math.max(560,rows.length*64),H=220,pl=34,pb=38,pt=18,max=Math.max(35,...rows.map(r=>r.days)),bw=(W-pl-10)/rows.length;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Days each 40-barrel delivery lasted">`;
+  [0,10,20,30].forEach(v=>{const y=H-pb-(H-pb-pt)*v/max;s+=`<line class="gl" x1="${pl}" x2="${W}" y1="${y}" y2="${y}"/><text class="ax" x="${pl-6}" y="${y+4}" text-anchor="end">${v}</text>`});
+  const avgY=H-pb-(H-pb-pt)*st.avgCycle/max;
+  rows.forEach((r,i)=>{const h=(H-pb-pt)*r.days/max,x=pl+i*bw+bw*.18,y=H-pb-h,bwi=bw*.64;
+    s+=`<rect x="${x}" y="${y}" width="${bwi}" height="${h}" rx="6" fill="${r.days<st.avgCycle-2?"#F59E0B":"#D97706"}"><title>${fd(r.c.received)} to ${fd(r.c.small2)}: ${r.days} days</title></rect>
+    <text x="${x+bwi/2}" y="${y-5}" text-anchor="middle" font-size="12" font-weight="600" style="fill:var(--ink)">${r.days}</text><text class="ax" x="${x+bwi/2}" y="${H-pb+16}" text-anchor="middle">${fds(r.c.received)}</text>`});
+  return `<div class="chart">${s}<line x1="${pl}" x2="${W}" y1="${avgY}" y2="${avgY}" style="stroke:var(--ink)" stroke-dasharray="5 4" stroke-width="1.5"/></svg></div>`;
+}
+function lastBy(arr,key,filter){return arr.filter(filter||(()=>1)).map(r=>r[key]).filter(Boolean).sort().pop()||null}
+function filterDue(){return GENS.map(g=>{const last=lastBy(data.filterChanges,"date",r=>r.generator===g),next=last?addMonths(parseD(last),1):null;return {g,last,next,days:next?diff(today(),next):null}})}
+function filterOrderDue(){const last=lastBy(data.filterOrders,"orderDate");return {last,next:last?addMonths(parseD(last),6):null}}
+function paintDue(){const last=lastBy(data.painting.filter(r=>r.completedDate),"completedDate"),open=data.painting.find(r=>!r.completedDate);return {last,next:last?addMonths(parseD(last),6):null,open}}
+function dueTone(days){return days==null?"neutral":days<0?"bad":days<=7?"warn":"ok"}
+
+/* ---------- attention list across all teams ---------- */
+const gateInside=()=>data.gateLog.filter(g=>g.status==="Inside");
+const clrDue=()=>data.clearances.map(r=>({r,...clr(r)})).filter(x=>x.days!=null&&x.days<=14);
+function alerts(){const out=[],lt=latestTraffic(),A=(c,t,d,go,dept)=>out.push({c,t,d,go,dept});
+  const hi=linkRows(lt).filter(x=>x.p>=90);if(hi.length)A(SEC.traffic.color,`${hi.length} link${hi.length>1?"s":""} at high throughput (90% or more)`,hi.map(x=>x.c.name+" "+x.p+"%").join("; ")+" on "+fd(lt.date),"traffic","NOC");
+  const al=activeAlarms();if(al.length){const mj=al.filter(a=>a.severity==="Critical"||a.severity==="Major").length;A(SEC.alarms.color,`${al.length} active alarm${al.length>1?"s":""}`,mj+" critical or major","alarms","NOC")}
+  const inc=data.incidents.filter(i=>i.status!=="Resolved");if(inc.length)A(SEC.incidents.color,`${inc.length} open incident${inc.length>1?"s":""}`,inc.slice(0,2).map(i=>i.title).join("; "),"incidents","NOC");
+  [["PR","Power Room"],["DH","Data Host Room"]].forEach(([r,n])=>{const h=envLatest(r,"hum"),t=envLatest(r,"temp");
+    if(h){const m=Math.max(h.day??0,h.night??0);if(m>70)A(SEC.climate.color,`${n} humidity reached ${m}%`,"Recorded "+fd(h.date)+". Check the dehumidifiers.","climate","NOC")}
+    if(t){const m=Math.max(t.day??0,t.night??0);if(m>27)A(SEC.climate.color,`${n} temperature reached ${m}°C`,"Recorded "+fd(t.date),"climate","NOC")}});
+  const st=fuelStats();
+  if(st.pendingOrder)A("var(--gen)","Fuel ordered, waiting for delivery","Ordered "+fd(st.pendingOrder.order),"fuel","Generator");
+  else if(st.cur){if(st.phase==="empty")A("var(--bad)","Big tank is empty. Order fuel","Small tank runs out around "+fd(st.runOut)+" ("+rel(st.runOut)+")","fuel","Generator");
+    else if(st.phase==="reserve"&&st.daysToOrder<=3)A("var(--gen)","Last 20 barrels move to the small tank soon","Around "+fd(st.orderDate)+" ("+rel(st.orderDate)+"). Prepare the fuel order.","fuel","Generator");
+    else if(st.phase==="full"&&diff(today(),st.transferDate)<=2)A("var(--gen)","Small tank needs refilling soon","First transfer expected "+fd(st.transferDate),"fuel","Generator")}
+  filterDue().forEach(f=>{if(f.days!=null&&f.days<=5)A(f.days<0?"var(--bad)":SEC.filters.color,`${f.g} filter change ${f.days<0?"overdue":"due"}`,"Due "+fd(f.next)+" ("+rel(f.next)+")","filters","Generator")});
+  const low=data.genSpares.filter(s=>(+s.qty||0)<(+s.minQty||0)||(+s.qty||0)<=0);if(low.length)A(SEC.spares.color,`${low.length} generator spare${low.length>1?"s":""} low on stock`,low.slice(0,3).map(s=>s.item).join(", "),"spares","Generator");
+  const gi=gateInside();if(gi.length)A(SEC.gatelog.color,`${gi.length} visitor${gi.length>1?"s":""} on site now`,gi.slice(0,3).map(g=>g.name).join(", "),"gatelog","Security");
+  const rq=data.gateLog.filter(g=>g.status==="Requested");if(rq.length)A(SEC.gatelog.color,`${rq.length} gate clearance request${rq.length>1?"s":""} waiting`,rq.slice(0,3).map(g=>g.name+" ("+fds(g.date)+")").join(", "),"gatelog","Security");
+  const cl=clrDue();if(cl.length)A(SEC.clearance.color,`${cl.length} airport pass${cl.length>1?"es":""} to renew`,cl.slice(0,3).map(x=>x.r.holder+(x.days<0?" (expired)":" ("+x.days+" days)")).join(", "),"clearance","Security");
+  const cam=data.cameras.filter(c=>c.status==="Not active");if(cam.length)A(SEC.cctv.color,`${cam.length} camera${cam.length>1?"s":""} not active`,cam.slice(0,3).map(c=>c.name).join(", "),"cctv","Security");
+  const pr=data.problems.filter(p=>p.status!=="Fixed");if(pr.length)A(SEC.problems.color,`${pr.length} open problem${pr.length>1?"s":""}`,pr.slice(0,2).map(p=>p.system+": "+p.title).join("; "),"problems","Shared");
+  const tk=data.tasks.filter(t=>t.status!=="Done"&&t.due&&parseD(t.due)<today());if(tk.length)A(SEC.tasks.color,`${tk.length} overdue task${tk.length>1?"s":""}`,tk.slice(0,2).map(t=>t.assignee+": "+t.title).join("; "),"tasks","Shared");
+  const act=data.activities.filter(a=>a.status!=="Completed"&&a.due&&parseD(a.due)<today());if(act.length)A(SEC.activities.color,`${act.length} overdue activit${act.length>1?"ies":"y"}`,act.slice(0,2).map(a=>a.title).join("; "),"activities","NOC");
+  const pd=paintDue();if(pd.open)A(SEC.painting.color,"Anti-corrosion round in progress",`${(pd.open.areas||[]).length} of ${AREAS.length} areas done`,"painting","Shared");else if(pd.next&&diff(today(),pd.next)<=21)A(SEC.painting.color,"Anti-corrosion painting due","Next round "+fd(pd.next)+" ("+rel(pd.next)+")","painting","Shared");
+  const oos=data.inventory.filter(i=>remain(i)<=0);if(oos.length)A(SEC.store.color,`${oos.length} store item${oos.length>1?"s":""} out of stock`,oos.slice(0,3).map(i=>i.item).join(", "),"store","Shared");
+  return out}
+function badge(id){switch(id){case"alarms":return activeAlarms().length;case"incidents":return data.incidents.filter(i=>i.status!=="Resolved").length;case"activities":return data.activities.filter(a=>a.status!=="Completed").length;
+  case"cctv":return data.cameras.filter(c=>c.status==="Not active").length;case"problems":return data.problems.filter(p=>p.status!=="Fixed").length;case"clearance":return clrDue().length;
+  case"tasks":return data.tasks.filter(t=>t.status!=="Done").length;case"gatelog":return gateInside().length+data.gateLog.filter(g=>g.status==="Requested").length;
+  case"spares":return data.genSpares.filter(s=>(+s.qty||0)<(+s.minQty||0)).length;case"fuel":{const s=fuelStats();return s.phase==="empty"&&!s.pendingOrder?1:0}}return 0}
+function summary(id){const n=(c,f)=>data[c].filter(f||(()=>1)).length;switch(id){
+  case"schedule":return "3 teams, A to D shifts";case"org":return n("staff",s=>s.dept!=="Leadership")+" staff";case"noc":return activeAlarms().length+" active alarms";
+  case"traffic":return n("circuits")+" links";case"alarms":return activeAlarms().length+" active";case"pfe":return n("pfe")+" readings";case"ups":return n("ups")+" readings";case"rectifier":return n("rectifier")+" readings";
+  case"climate":return n("env")+" readings";case"ciena":return n("cienaPorts",p=>p.status==="Active")+" of "+n("cienaPorts")+" active";
+  case"routers":case"firewall":case"planet":case"cswitch":{const t=PORTSEC[id].type;return n("devicePorts",p=>p.deviceType===t&&p.status==="Active")+" of "+n("devicePorts",p=>p.deviceType===t)+" active"}
+  case"devices":return n("devices")+" devices";case"ips":return n("ips")+" records";case"incidents":return n("incidents")+" logged";case"activities":return n("activities",a=>a.status!=="Completed")+" pending";case"manholes":return n("manholes")+" records";
+  case"fuel":{const s=fuelStats();return s.orderDate?(s.phase==="empty"?"Order fuel now":"Order "+rel(s.orderDate)):"No cycles yet"}case"filters":return n("filterChanges")+" changes logged";
+  case"security":return gateInside().length+" visitors on site";case"gatelog":return n("gateLog")+" entries";case"clearance":return n("clearances")+" passes";case"cctv":return n("cameras",c=>c.status==="Active")+" of "+n("cameras")+" active";
+  case"tasks":return n("tasks",t=>t.status!=="Done")+" open";case"problems":return n("problems",p=>p.status!=="Fixed")+" open";case"replaced":return n("replacements")+" records";case"painting":return n("painting")+" rounds";
+  case"uniforms":return n("uniforms")+" orders";case"spares":return n("inventory",i=>i.kind==="Spare")+n("genSpares")+" items";case"store":return n("inventory",i=>i.kind!=="Spare")+" items";case"leave":return n("leave")+" staff"}return ""}
+/* ---------- derived ---------- */
+function latestTraffic(){return [...data.traffic].filter(r=>r.date).sort((a,b)=>a.date.localeCompare(b.date)).pop()||null}
+function linkRows(rec){return circuits().map(c=>({c,p:rec?num(rec["c_"+c.id]):null})).filter(x=>x.p!=null)}
+function envSeries(room,metric){const rows=data.env.filter(r=>r.room===room&&num(r[metric])!=null);const dates=[...new Set(rows.map(r=>r.date))].sort().slice(-31);
+  const pick=sh=>dates.map(d=>{const r=rows.find(x=>x.date===d&&x.shift===sh);return r?num(r[metric]):null});return {rows,dates,day:pick("Day"),night:pick("Night")}}
+function envLatest(room,metric){const e=envSeries(room,metric);const i=e.dates.length-1;return i<0?null:{date:e.dates[i],day:e.day[i],night:e.night[i]}}
+function activeAlarms(){return data.alarms.filter(a=>a.state!=="Cleared")}
+const PORTSEC={routers:{type:"Cisco router",speeds:["100G","10G","1G"],vlan:false,what:"Cisco routers",sub:"Active and non-active ports on every Cisco router, by 100G, 10G and 1G."},
+ firewall:{type:"Firewall",speeds:["10G","1G"],vlan:false,what:"Firewall",sub:"Active and non-active 10G and 1G ports on the firewall."},
+ planet:{type:"Planet switch",speeds:["10G","1G","100M"],vlan:true,what:"Planet switch",sub:"Active and non-active ports on the Planet switches, with their VLANs."},
+ cswitch:{type:"Cisco switch",speeds:["10G","1G","100M"],vlan:true,what:"Cisco switch",sub:"Active and non-active ports on the Cisco switches, with their VLANs."}};
+function portView(id){const P=PORTSEC[id],rows=data.devicePorts.filter(p=>p.deviceType===P.type),S=portSchema("port",P.speeds,P.vlan);
+  const act=rows.filter(p=>p.status==="Active").length;const devs=[...new Set(rows.map(r=>r.device))].sort();
+  const sp_=P.speeds.map(s=>{const r=rows.filter(p=>p.speed===s);return stat(s+" ports",r.filter(p=>p.status==="Active").length+" / "+r.length,"active of recorded")}).join("");
+  const plates=devs.map(d=>{const pr=rows.filter(r=>r.device===d).sort(S.sort);return `<div class="plate" style="margin-bottom:10px"><div class="cap"><b>${esc(d)}</b><span>${pr.filter(p=>p.status==="Active").length} active, ${pr.filter(p=>p.status!=="Active").length} not active</span></div><div class="ports free">${pr.map(p=>`<button class="port ${p.status==="Active"?"up":"down"}" data-edit="devicePorts" data-id="${p.id}" title="${esc((p.connectedTo||"")+" "+(p.vlan?"VLAN "+p.vlan:""))}"><span class="led"></span>${esc(p.port)}<small>${esc(p.speed||"")}${p.vlan?" · V"+esc(p.vlan):""}</small></button>`).join("")}</div></div>`}).join("");
+  SCHEMAS.devicePorts=S;
+  return head(P.what+" ports",P.sub)+`<div class="grid g4">${stat("Devices",devs.length,"with ports recorded")}${stat("Active ports",act,"of "+rows.length+" recorded","var(--ok)")}${stat("Not active",rows.length-act,"free or down","var(--bad)")}${sp_}</div>
+  ${plates?`<h3>Port map</h3>${plates}<div class="legend"><span><i style="background:#34D399"></i>Active</span><span><i style="background:#F87171"></i>Not active</span><span>Select a port to edit it</span></div>`:""}
+  <h3>Port record</h3>${table(id+"-ports","devicePorts",{preset:{deviceType:P.type},filter:r=>r.deviceType===P.type,cols:S.cols})}
+  ${P.vlan?`<h3>VLANs</h3>${table(id+"-vlans","vlans",{preset:{deviceType:P.type},filter:r=>r.deviceType===P.type})}`:""}`}
+function envView(room,metric){const rn=room==="PR"?"Power Room (PR)":"Data Host Room (DH)",mn=metric==="temp"?"Temperature":"Humidity",u=metric==="temp"?"°C":"%";
+  const e=envSeries(room,metric),l=envLatest(room,metric),all=[...e.day,...e.night],a=avg(all),mx=all.filter(v=>v!=null);
+  const other=metric==="temp"?"hum":"temp";
+  return head(mn+" of "+rn,`Day and night ${mn.toLowerCase()} readings for the ${rn}. Each reading also keeps the ${metric==="temp"?"humidity":"temperature"} taken at the same time.`)+
+  `<div class="grid g4">${stat("Latest day reading",l&&l.day!=null?l.day+u:"—",l?fd(l.date):"No reading yet","#F59E0B")}${stat("Latest night reading",l&&l.night!=null?l.night+u:"—",l?fd(l.date):"","#6366F1")}${stat("Average",a!=null?a.toFixed(1)+u:"—","last "+e.dates.length+" days")}${stat("Highest",mx.length?Math.max(...mx)+u:"—",mx.length?"Lowest "+Math.min(...mx)+u:"")}</div>
+  <div class="card" style="margin-top:14px"><h3>${mn} of ${rn}</h3>${lineChart(e.dates.map(fds),[{name:"Day",color:"#F59E0B",values:e.day},{name:"Night",color:"#6366F1",values:e.night}],{unit:u,title:mn+" of "+rn,limit:metric==="temp"?27:70,limitLabel:"High above",min:metric==="hum"?0:null,max:metric==="hum"?100:null})}</div>
+  <h3>Reading record</h3>${table(room+metric,"env",{preset:{room},filter:r=>r.room===room,cols:[dcol,scol,{k:metric,label:mn+" ("+u+")",f:r=>num(r[metric])!=null?`<b>${num(r[metric])}${u}</b>`:"—"},{k:"st",label:"Status",f:r=>envPill(metric,num(r[metric]))},{k:other,label:(other==="temp"?"Temperature (°C)":"Humidity (%)"),f:r=>num(r[other])!=null?num(r[other])+(other==="temp"?"°C":"%"):"—"},{k:"recordedBy",label:"Recorded by"},{k:"notes",label:"Notes"}]})}`}
+function readingView(col,title,sub,keys){const rows=[...data[col]].sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.shift).localeCompare(String(b.shift)));const last=rows[rows.length-1];
+  const dates=[...new Set(rows.map(r=>r.date))].slice(-31),k0=keys[0];const pick=sh=>dates.map(d=>{const r=rows.find(x=>x.date===d&&x.shift===sh);return r?num(r[k0.k]):null});
+  return head(title,sub)+`<div class="grid g4">${keys.map(k=>stat(k.label,last&&num(last[k.k])!=null?num(last[k.k])+" "+k.u:"—",last?fd(last.date)+", "+esc(last.shift||""):"No reading yet")).join("")}${stat("Readings recorded",rows.length,rows.filter(r=>r.status&&r.status!=="Normal").length+" with warning or alarm")}</div>
+  <div class="card" style="margin-top:14px"><h3>${esc(k0.label)}, day and night</h3>${lineChart(dates.map(fds),[{name:"Day",color:"#F59E0B",values:pick("Day")},{name:"Night",color:"#6366F1",values:pick("Night")}],{unit:" "+k0.u,title:k0.label})}</div>
+  <h3>Reading record</h3>${table(col,col)}`}
+function invView(kind,title,sub){const rows=data.inventory.filter(i=>kind==="Spare"?i.kind==="Spare":i.kind!=="Spare");const units=rows.reduce((a,r)=>a+remain(r),0);
+  const by={};rows.forEach(r=>{const v=(r.vendor||"N/A").toUpperCase().replace("N/A","Unbranded");by[v]=(by[v]||0)+1});const top=Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,6);const mx=top.length?top[0][1]:1;
+  const areas={};rows.forEach(r=>{const a=(r.area||"Other")+(r.bay?" · Bay "+r.bay:"");areas[a]=(areas[a]||0)+1});
+  return head(title,sub)+`<div class="grid g4">${stat("Items recorded",rows.length,units+" units remaining")}${stat("Out of stock",rows.filter(r=>remain(r)<=0).length,"remaining is zero","var(--bad)")}${stat("Issued this year",rows.filter(r=>r.dateOut&&String(r.dateOut).startsWith(String(today().getFullYear()))).length,"items with stock out")}${stat("Storage places",Object.keys(areas).length,"areas and bays")}</div>
+  <div class="grid g2" style="margin-top:14px"><div class="card"><h3>Items by vendor</h3><div class="bars">${top.map(([v,n])=>`<div class="bar"><span class="nm">${esc(v)}</span><span class="track"><i style="width:${n/mx*100}%;background:var(--accent)"></i></span><b>${n}</b></div>`).join("")||`<div class="empty">No items yet.</div>`}</div></div>
+  <div class="card"><h3>Where items are kept</h3>${Object.entries(areas).sort().map(([a,n])=>`<div class="kv"><span>${esc(a)}</span><b>${n} items</b></div>`).join("")||`<div class="empty">No items yet.</div>`}</div></div>
+  <h3>Inventory record</h3>${table(kind,"inventory",{preset:{kind},filter:r=>kind==="Spare"?r.kind==="Spare":r.kind!=="Spare"})}`}
+function routeSVG(){return `<svg class="route" viewBox="0 0 700 86" role="img" aria-label="DARE1 subsea cable route: Djibouti, Bosaso, Mogadishu, Mombasa">
+ <path class="flow" d="M30 34 C150 4,230 60,330 40 S520 18,670 44" fill="none" stroke="#7DD3FC" stroke-width="2.5" stroke-dasharray="2 7" stroke-linecap="round"/>
+ <path d="M0 74c40-10 60 8 100 0s60 8 100 0 60 8 100 0 60 8 100 0 60 8 100 0 60 8 100 0 60 8 100 0" fill="none" stroke="#3B82F6" stroke-width="1.5" opacity=".5"/>
+ ${[[30,34,"Djibouti",0],[232,37,"Bosaso",0],[450,31,"Mogadishu CLS",1],[670,44,"Mombasa",0]].map(([x,y,n,m])=>`<circle cx="${x}" cy="${y}" r="${m?9:5.5}" fill="${m?"#FDE047":"#E0F2FE"}" stroke="#0B2C6B" stroke-width="2"/>${m?`<circle cx="${x}" cy="${y}" r="15" fill="none" stroke="#FDE047" stroke-width="1.5" opacity=".6"/>`:""}<text x="${Math.min(Math.max(x,36),655)}" y="${y+(m?-22:24)}" text-anchor="middle" font-size="12.5" font-weight="${m?700:500}" fill="${m?"#FDE047":"#D6E6FF"}" font-family="Outfit,system-ui,sans-serif">${n}</text>`).join("")}</svg>`}
+const VIEWS={
+ traffic(){const recs=[...data.traffic].filter(r=>r.date).sort((a,b)=>a.date.localeCompare(b.date)).slice(-31),lt=recs[recs.length-1],links=linkRows(lt),cs=circuits();
+  const regs=[...new Set(cs.map(c=>c.region).filter(Boolean))].slice(0,6),pal=["#0891B2","#F97316","#7C3AED","#16A34A","#DB2777","#CA8A04"];
+  const series=regs.map((rg,i)=>({name:rg,color:pal[i],values:recs.map(r=>{const v=avg(cs.filter(c=>c.region===rg).map(c=>num(r["c_"+c.id])));return v==null?null:Math.round(v)})}));
+  const pk=links.slice().sort((a,b)=>b.p-a.p)[0],a=avg(links.map(x=>x.p));
+  const gb=links.reduce((s,x)=>s+(num(x.c.capacity)||0)*x.p/100,0);
+  return head("Internet & L2 port throughput","Maximum nightly throughput on each circuit towards Djibouti and Mombasa and on the Cisco router links, as a share of port capacity.")+
+  `<div class="grid g4">${stat("Total links monitored",cs.length,lt?"Latest report "+fd(lt.date):"No report yet")}${stat("High throughput links",links.filter(x=>x.p>=90).length,"90% or more","var(--bad)")}${stat("Peak link",pk?pk.p+"%":"—",pk?esc(pk.c.name+" "+(pk.c.port||"")):"")}${stat("Average throughput",a!=null?a.toFixed(0)+"%":"—",links.length?"≈ "+gb.toFixed(1)+" Gbps in total":"")}</div>
+  <div class="grid g2" style="margin-top:14px"><div class="card"><h3>Latest night by link</h3>${links.length?`<div class="bars">${links.map(x=>`<div class="bar"><span class="nm">${esc(x.c.name)} <span class="hint mono">${esc(x.c.port||"")}</span></span><span class="track"><i style="width:${Math.min(100,x.p)}%;background:${tcolor(x.p)}"></i></span><b>${x.p}%</b></div>`).join("")}</div>`:`<div class="empty">No throughput record yet.</div>`}</div>
+  <div class="card"><h3>Traffic usage, average by region</h3>${lineChart(recs.map(r=>fds(r.date)),series,{unit:"%",min:0,max:100,limit:90,limitLabel:"High at",title:"Traffic usage"})}</div></div>
+  <h3>Nightly throughput record</h3>${table("traffic","traffic")}<h3>Circuits</h3>${table("circuits","circuits")}`},
+ alarms(){const al=activeAlarms(),c=s=>al.filter(a=>a.severity===s).length;
+  return head("Active alarms","Alarm logs from Huawei NetEco (environment and power) and Ciena (transport). Mark an alarm as cleared when it is resolved.")+
+  `<div class="grid g4">${stat("Active alarms",al.length,data.alarms.length-al.length+" cleared")}${stat("Critical",c("Critical"),"","var(--bad)")}${stat("Major",c("Major"),"","#EA580C")}${stat("Minor and warning",c("Minor")+c("Warning"),"","var(--warn)")}</div><h3>Alarm log</h3>${table("alarms","alarms")}`},
+ pfe(){return readingView("pfe","Power Feeding Equipment","Day and night readings of the PFE that powers the DARE1 subsea cable repeaters from the Mogadishu landing station.",[{k:"voltage",label:"Output voltage",u:"V"},{k:"current",label:"Line current",u:"mA"}])},
+ prHum(){return envView("PR","hum")},prTemp(){return envView("PR","temp")},dhHum(){return envView("DH","hum")},dhTemp(){return envView("DH","temp")},
+ ups(){return readingView("ups","Huawei UPS readings","Day and night readings from the Huawei UPS: input, output, load, battery and backup time.",[{k:"load",label:"Load",u:"%"},{k:"battery",label:"Battery capacity",u:"%"},{k:"backup",label:"Backup time",u:"min"}])},
+ rectifier(){return readingView("rectifier","Huawei rectifier readings","Day and night readings from the Huawei rectifier: AC input, DC output, load and battery current.",[{k:"dcV",label:"DC output voltage",u:"V"},{k:"loadA",label:"Load current",u:"A"},{k:"acV",label:"AC input voltage",u:"V"}])},
+ ciena(){const P=data.cienaPorts,c=s=>P.filter(p=>p.status===s).length;
+  const plate=(slot,link)=>{let cells="";for(let n=29;n<=44;n++){const p=P.find(x=>String(x.slot)===slot&&+x.port===n);const cls=p&&p.status==="Active"?"up":p&&p.status==="Not active"?"down":"";
+    cells+=`<button class="port ${cls}" ${p?`data-edit="cienaPorts" data-id="${p.id}"`:`data-addp="${slot}:${n}"`} title="6-${slot}-${n}${p&&p.circuit?" · "+esc(p.circuit):""}"><span class="led"></span>${n}<small>${p&&p.circuit?esc(p.circuit):p?esc(p.status):"add"}</small></button>`}
+    const pr=P.filter(x=>String(x.slot)===slot);return `<div class="plate"><div class="cap"><b>Shelf 6 · Slot ${slot} · ${link} link</b><span>${pr.filter(p=>p.status==="Active").length} active of 16 ports (29 to 44)</span></div><div class="ports">${cells}</div></div>`};
+  return head("Ciena Site Manager ports","Shelf 6 carries the two subsea line slots: slot 6 for the Djibouti link and slot 13 for the Mombasa link, ports 29 to 44 on each.")+
+  `<div class="grid g4">${stat("Active ports",c("Active"),"carrying a circuit","var(--ok)")}${stat("Not active",c("Not active"),"free for new circuits","var(--bad)")}${stat("Unconfirmed",c("Unconfirmed"),"check in Site Manager","var(--muted)")}${stat("Total ports",32,"2 slots × 16 ports")}</div>
+  <h3>Port map</h3><div class="grid g2">${plate("6","Djibouti")}${plate("13","Mombasa")}</div><div class="legend"><span><i style="background:#34D399"></i>Active</span><span><i style="background:#F87171"></i>Not active</span><span><i style="background:#52627F"></i>Unconfirmed</span><span>Select a port to edit it</span></div>
+  <h3>Port record</h3>${table("ciena","cienaPorts")}`},
+ routers(){return portView("routers")},firewall(){return portView("firewall")},planet(){return portView("planet")},cswitch(){return portView("cswitch")},
+ devices(){const D=data.devices,groups={};D.forEach(d=>{const k=(d.room||"Place not recorded")+(d.rack?" · Rack "+d.rack:"");(groups[k]=groups[k]||[]).push(d)});
+  return head("Active devices & racks","Every device in the CLS datacenter and the room, rack and rack unit where it is installed.")+
+  `<div class="grid g4">${stat("Devices recorded",D.length,"")}${stat("Active",D.filter(d=>d.status==="Active").length,"","var(--ok)")}${stat("Faulty or not active",D.filter(d=>d.status==="Faulty"||d.status==="Not active").length,"","var(--bad)")}${stat("Racks and places",Object.keys(groups).length,"")}</div>
+  ${D.length?`<h3>By room and rack</h3><div class="grid g3">${Object.entries(groups).sort().map(([k,v])=>`<div class="card"><h3>${esc(k)}</h3>${v.sort((a,b)=>(+b.unit||0)-(+a.unit||0)).map(d=>`<div class="kv"><span><b>${esc(d.name)}</b><div class="hint">${esc(d.type||"")}${d.unit?" · U"+esc(d.unit):""}</div></span>${sp(d.status)}</div>`).join("")}</div>`).join("")}</div>`:""}
+  <h3>Device record</h3>${table("devices","devices")}`},
+ ips(){const I=data.ips;return head("Public & private IP addresses","The IP address plan: public addresses and private subnets, the device or interface that uses each one, and what it is for.")+
+  `<div class="grid g4">${stat("Public",I.filter(i=>i.type==="Public").length,"addresses and subnets","var(--warn)")}${stat("Private",I.filter(i=>i.type==="Private").length,"addresses and subnets","var(--info)")}${stat("In use",I.filter(i=>i.status==="In use").length,"")}${stat("Free or reserved",I.filter(i=>i.status!=="In use").length,"")}</div>
+  <h3>Public addresses</h3>${table("ip-public","ips",{preset:{type:"Public"},filter:r=>r.type==="Public"})}<h3>Private addresses</h3>${table("ip-private","ips",{preset:{type:"Private"},filter:r=>r.type!=="Public"})}`},
+ incidents(){const I=data.incidents,y=String(today().getFullYear()),ty=I.filter(i=>String(i.start||"").startsWith(y));const types=["Internet failure","Internet traffic down","Power failure","Human error"];
+  return head("Internet incident reports","Internet failures, traffic drops, power failures and human errors, with the root cause and the action taken.")+
+  `<div class="grid g4">${stat("Open incidents",I.filter(i=>i.status!=="Resolved").length,ty.length+" logged in "+y,"var(--bad)")}${types.map(t=>stat(t,ty.filter(i=>i.type===t).length,"in "+y)).join("")}</div><h3>Incident log</h3>${table("incidents","incidents")}`},
+ cctv(){const C=data.cameras,a=C.filter(c=>c.status==="Active").length;
+  return head("CCTV cameras","Active and non-active cameras on the NVR, with location, IP address and the last time each was checked.")+
+  `<div class="grid g4">${stat("Cameras recorded",C.length,"")}${stat("Active",a,"","var(--ok)")}${stat("Not active",C.length-a,"","var(--bad)")}${stat("Availability",C.length?Math.round(a/C.length*100)+"%":"—","")}</div>
+  ${C.length?`<h3>Camera wall</h3><div class="plate"><div class="ports free">${[...C].sort(SCHEMAS.cameras.sort).map(c=>`<button class="port ${c.status==="Active"?"up":"down"}" data-edit="cameras" data-id="${c.id}" title="${esc(c.location||"")}"><span class="led"></span>${esc(c.channel||"CH")}<small>${esc(c.name)}</small></button>`).join("")}</div></div>`:""}
+  <h3>Camera record</h3>${table("cameras","cameras")}`},
+ activities(){const A=data.activities,c=s=>A.filter(a=>a.status===s).length;
+  return head("Activity record","Planned and finished work at the CLS: maintenance, installations, network changes and visits.")+
+  `<div class="grid g4">${stat("Pending",c("Pending"),"","var(--warn)")}${stat("In progress",c("In progress"),"","var(--info)")}${stat("Completed",c("Completed"),"","var(--ok)")}${stat("Overdue",A.filter(a=>a.status!=="Completed"&&a.due&&parseD(a.due)<today()).length,"","var(--bad)")}</div>
+  <h3>Pending and in progress</h3>${table("act-open","activities",{filter:r=>r.status!=="Completed"})}<h3>Completed</h3>${table("act-done","activities",{preset:{status:"Completed"},filter:r=>r.status==="Completed"})}`},
+ problems(){const P=data.problems,c=s=>P.filter(p=>p.status===s).length;
+  return head("Problems & fixes","Every problem at the CLS and how it was solved. Fixed problems stay here as a searchable reference.")+
+  `<div class="grid g4">${stat("Open",c("Open"),"","var(--bad)")}${stat("In progress",c("In progress"),"","var(--warn)")}${stat("Fixed",c("Fixed"),"","var(--ok)")}${stat("Total recorded",P.length,"")}</div><h3>Problem log</h3>${table("problems","problems")}`},
+ replaced(){const R=data.replacements,y=String(today().getFullYear());
+  return head("Replaced parts","Faulty parts taken out of service and what replaced them, with serial numbers.")+
+  `<div class="grid g4">${stat("Parts replaced",R.length,"all records")}${stat("This year",R.filter(r=>String(r.date||"").startsWith(y)).length,"in "+y)}${stat("Systems affected",new Set(R.map(r=>r.system)).size,"")}</div><h3>Replacement log</h3>${table("replacements","replacements")}`},
+ manholes(){const M=data.manholes,y=today().getFullYear(),ty=M.filter(m=>+m.year===y),done=ty.filter(m=>m.status==="Repaired"||m.status==="No repair needed").length;
+  return head("Fiber cable manhole yearly repair","Yearly inspection and repair status of each manhole on the fiber route to the landing station.")+
+  `<div class="grid g4">${stat(y+" manholes",ty.length,"records this year")}${stat("Done",done,ty.length?Math.round(done/ty.length*100)+"% of this year":"","var(--ok)")}${stat("In progress",ty.filter(m=>m.status==="In progress").length,"","var(--info)")}${stat("Pending",ty.filter(m=>m.status==="Pending").length,"","var(--warn)")}</div>
+  ${ty.length?`<div class="card" style="margin-top:14px"><h3>${y} progress</h3><div class="progress" style="height:12px"><i style="width:${done/ty.length*100}%"></i></div><p class="hint" style="margin:8px 0 0">${done} of ${ty.length} manholes repaired or checked with no repair needed.</p></div>`:""}
+  <h3>Manhole record</h3>${table("manholes","manholes")}`},
+ leave(){const L=data.leave,y=today().getFullYear(),plans=data.leavePlan.filter(p=>p.status!=="Cancelled"&&p.from&&p.to);const tk=L.reduce((a,r)=>a+(num(r.taken)||0),0),bl=L.reduce((a,r)=>a+Math.max(0,bal(r)),0);
+  const ys=new Date(y,0,1),yl=diff(ys,new Date(y+1,0,1));const who=[...new Set(plans.map(p=>p.staff))].sort();
+  const gantt=who.length?`<div class="chart"><svg viewBox="0 0 760 ${30+who.length*28}" role="img" aria-label="Leave plan for ${y}">${MON.map((m,i)=>{const x=170+diff(ys,new Date(y,i,1))/yl*580;return `<line class="gl" x1="${x}" x2="${x}" y1="18" y2="${30+who.length*28}"/><text class="ax" x="${x+4}" y="12">${m}</text>`}).join("")}
+   ${(()=>{const x=170+diff(ys,today())/yl*580;return `<line x1="${x}" x2="${x}" y1="16" y2="${30+who.length*28}" style="stroke:var(--bad)" stroke-dasharray="3 3"/>`})()}
+   ${who.map((w,i)=>`<text class="ax" x="0" y="${42+i*28}" style="fill:var(--ink);font-size:12px">${esc(w.length>24?w.slice(0,23)+"…":w)}</text>`+plans.filter(p=>p.staff===w).map(p=>{const a=Math.max(0,diff(ys,parseD(p.from))),b=Math.min(yl,diff(ys,parseD(p.to))+1);if(b<=a)return "";return `<rect x="${170+a/yl*580}" y="${30+i*28}" width="${Math.max(4,(b-a)/yl*580)}" height="16" rx="5" style="fill:${p.status==="Taken"?"var(--muted)":p.status==="Approved"?"var(--ok)":"var(--accent)"}"><title>${esc(w)}: ${fd(p.from)} to ${fd(p.to)} (${esc(p.status)})</title></rect>`}).join("")).join("")}</svg></div>
+   <div class="legend"><span><i style="background:var(--accent)"></i>Planned</span><span><i style="background:var(--ok)"></i>Approved</span><span><i style="background:var(--muted)"></i>Taken</span><span><i style="background:var(--bad)"></i>Today</span></div>`:`<div class="empty">Add leave plans below to see the year calendar.</div>`;
+  return head("Staff annual leave","Leave registration and balances for all CLS staff, and the leave plan for the year. Balance is leave carried forward plus this year's entitlement, minus leave taken.")+
+  `<div class="grid g4">${stat("Staff registered",L.length,"CLS-MOG")}${stat("Days taken",tk,"this year")}${stat("Days remaining",bl,"total balance","var(--ok)")}${stat("No balance left",L.filter(r=>bal(r)<=0).length,"staff","var(--muted)")}</div>
+  <h3>Leave registration ${y}</h3>${table("leave","leave")}
+  <h3>Leave plan ${y}</h3><div class="card" style="margin-bottom:12px">${gantt}</div>${table("leavePlan","leavePlan")}`},
+};
+
+/* ---------- hero pieces ---------- */
+function radarSVG(n){const pts=[[70,60],[180,90],[150,190],[95,170],[205,150]].slice(0,Math.max(1,Math.min(5,n||2)));
+  return `<svg class="radar" viewBox="0 0 260 260" role="img" aria-label="Site security sweep">
+   <defs><linearGradient id="swg" x1="0" x2="1"><stop offset="0" stop-color="#5EEAD4" stop-opacity="0"/><stop offset="1" stop-color="#5EEAD4" stop-opacity=".45"/></linearGradient></defs>
+   ${[40,75,110,125].map(r=>`<circle cx="130" cy="130" r="${r}" fill="none" stroke="#5EEAD4" stroke-opacity=".22"/>`).join("")}
+   <path d="M130 5V255M5 130H255" stroke="#5EEAD4" stroke-opacity=".18"/>
+   <g class="sweep"><path d="M130 130 L130 5 A125 125 0 0 1 238 68 Z" fill="url(#swg)"/><line x1="130" y1="130" x2="130" y2="5" stroke="#5EEAD4" stroke-width="2"/></g>
+   ${pts.map((p,i)=>`<circle class="blip" style="animation-delay:${i*.7}s" cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#86EFAC"/>`).join("")}
+   <circle cx="130" cy="130" r="6" fill="#fff"/><text x="130" y="152" text-anchor="middle" font-size="11" fill="#CCFBF1" font-family="IBM Plex Mono,monospace">DARE1</text></svg>`}
+function dutyBox(dept){const s=curShift(dept),on=onShift(dept);
+  return `<div class="duty"><div class="lbl">${esc(SCHED[dept].name)} · on shift now</div><div class="sh">Shift ${s?esc(s.k):"—"} <span style="font-size:14px;font-weight:500;opacity:.75;font-family:var(--mono)">${s?fmt12(s.from)+" – "+fmt12(s.to):""}</span></div>
+   <ul>${on.length?on.map(p=>`<li>${av(p.name,dept)}<span><b style="display:block;font-weight:600;line-height:1.2">${esc(p.name)}</b><small style="opacity:.7">${esc(p.role||"")}</small></span></li>`).join(""):`<li style="opacity:.75;font-size:13px">No one assigned to shift ${s?esc(s.k):""} yet. Set each person's shift in Reporting line &amp; staff.</li>`}</ul></div>`}
+function slideCLS(al){const crewN=staffNames().length,open=data.tasks.filter(t=>t.status!=="Done").length,h=nowParts().h;
+  return `<section class="hero h-cls"><span class="eyebrow"><span class="live"><i></i>Live</span>Mogadishu Cable Landing Station · DARE1 · <span class="clk">${hhmm()} EAT</span></span>
+   <h2>Good ${h<12?"morning":h<17?"afternoon":"evening"}, CLS team</h2><p>NOC, generator and security operations for the Mogadishu CLS datacenter in one place. Every team reports to the CLS Manager, Mohamed Dahir Ali.</p>
+   <div class="hero-grid"><div class="herostats">
+    <button class="hs" data-goto="org"><b>${crewN}</b><span>staff across 4 teams</span></button>
+    <button class="hs" data-goto="schedule"><b>${["NOC","Generator","Security"].reduce((a,d)=>a+onShift(d).length,0)}</b><span>on shift right now</span></button>
+    <button class="hs" data-goto="tasks"><b>${open}</b><span>open tasks</span></button>
+    <button class="hs" data-goto="overview" data-scroll="attn"><b>${al.length}</b><span>items need attention</span></button></div>
+    <div class="herostats">${["NOC","Generator","Security"].map(d=>{const s=curShift(d);return `<button class="hs" data-goto="schedule"><b style="font-size:20px">Shift ${s?esc(s.k):"—"}</b><span>${d==="Generator"?"Generator":d} until ${shiftEnds(s)}</span></button>`}).join("")}</div></div></section>`}
+function slideNOC(){const lt=latestTraffic(),links=linkRows(lt),a=avg(links.map(x=>x.p));
+  return `<section class="hero h-noc"><span class="eyebrow">NOC · DARE1 subsea cable · Djibouti ⇄ Mombasa</span><h2>Network operations</h2><p>Link throughput, alarms, power systems, ports and room climate for the landing station.</p>${routeSVG()}
+   <div class="herostats" style="margin-top:14px"><button class="hs" data-goto="traffic"><b>${data.circuits.length||"—"}</b><span>links monitored</span></button><button class="hs" data-goto="traffic"><b>${a!=null?Math.round(a)+"%":"—"}</b><span>average throughput</span></button>
+   <button class="hs" data-goto="alarms"><b>${activeAlarms().length}</b><span>active alarms</span></button><button class="hs" data-goto="ciena"><b>${data.cienaPorts.filter(p=>p.status==="Active").length}</b><span>Ciena ports active</span></button></div></section>`}
+function slideGEN(){const st=fuelStats();
+  return `<section class="hero h-gen"><span class="eyebrow">Generator operations · 3 generators · 40 + 20 barrel tanks</span><h2>${st.phase==="empty"?"Big tank empty. Order fuel":"Fuel and power backup"}</h2>
+   <p>${st.orderDate?(st.phase==="empty"?"The small tank runs out around "+fd(st.runOut)+".":"Next fuel order expected "+fd(st.orderDate)+" ("+rel(st.orderDate)+")."):"Record a fuel delivery to start tracking."} One delivery lasts about ${st.avgCycle.toFixed(0)} days.</p>
+   <div class="hero-grid"><div class="tankwrap"><div class="tank">${tankSVG(st.big,BIG,130,160,"Big tank",1)}<div class="lbl">Big tank</div><div class="amt">${st.big.toFixed(0)} of ${BIG} barrels</div></div><div class="tank">${tankSVG(st.small,SMALL,90,120,"Small tank",1)}<div class="lbl">Small tank</div><div class="amt">≈ ${st.small.toFixed(1)} of ${SMALL}</div></div></div>
+   <div class="herostats"><button class="hs" data-goto="fuel"><b>${st.perDay.toFixed(2)}</b><span>barrels a day</span></button><button class="hs" data-goto="filters"><b>${(filterDue().filter(f=>f.next).sort((a,b)=>a.next-b.next)[0]||{}).next?fds(filterDue().filter(f=>f.next).sort((a,b)=>a.next-b.next)[0].next):"—"}</b><span>next filter change</span></button>
+   <button class="hs" data-goto="spares"><b>${data.genSpares.reduce((a,s)=>a+(+s.qty||0),0)}</b><span>generator spares in store</span></button><button class="hs" data-goto="schedule"><b>${esc((curShift("Generator")||{}).k||"—")}</b><span>operator shift now</span></button></div></div></section>`}
+function slideSEC(){const gi=gateInside(),cams=data.cameras,ca=cams.filter(c=>c.status==="Active").length;
+  return `<section class="hero h-sec"><span class="eyebrow">Security · airport compound · DARE1 site</span><h2>Site security</h2><p>Visitor gate log, airport gate clearance, CCTV and the security team on shift.</p>
+   <div class="hero-grid"><div style="display:flex;flex-direction:column;gap:12px">${dutyBox("Security")}
+   <div class="herostats"><button class="hs" data-goto="gatelog"><b>${gi.length}</b><span>visitors on site</span></button><button class="hs" data-goto="clearance"><b>${clrDue().length}</b><span>passes to renew</span></button><button class="hs" data-goto="cctv"><b>${ca}/${cams.length}</b><span>cameras active</span></button></div></div>
+   ${radarSVG(gi.length+1)}</div></section>`}
+
+/* ---------- carousel ---------- */
+let car={i:0,timer:null,paused:false};
+function carouselHTML(al){const slides=[slideCLS(al),slideNOC(),slideGEN(),slideSEC()],names=["CLS station","NOC","Generator","Security"];
+  return `<div class="carousel" id="car" aria-roledescription="carousel" aria-label="Department highlights"><div class="cprog" id="cprog"></div><div class="slides" id="slides" style="transform:translateX(-${car.i*100}%)">${slides.map((s,i)=>`<div class="slide" role="group" aria-roledescription="slide" aria-label="${names[i]}" ${i!==car.i?'aria-hidden="true"':""}>${s}</div>`).join("")}</div>
+   <div class="cnav"><button class="carr" data-car="-1" aria-label="Previous slide">‹</button>${names.map((n,i)=>`<button class="cdot" data-cdot="${i}" aria-label="Show ${n}" aria-current="${i===car.i}"></button>`).join("")}<button class="carr" data-car="1" aria-label="Next slide">›</button></div></div>`}
+function carGo(i){const el=$("slides");if(!el)return;car.i=(i+4)%4;el.style.transform=`translateX(-${car.i*100}%)`;
+  el.querySelectorAll(".slide").forEach((s,k)=>s.toggleAttribute("aria-hidden",k!==car.i));document.querySelectorAll(".cdot").forEach((d,k)=>d.setAttribute("aria-current",String(k===car.i)));carStart()}
+const reduced=()=>window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+function carStart(){clearTimeout(car.timer);const p=$("cprog");if(!p||reduced()||car.paused){if(p)p.classList.remove("run");return}p.classList.remove("run");void p.offsetWidth;p.classList.add("run");car.timer=setTimeout(()=>carGo(car.i+1),8000)}
+function carBind(){const c=$("car");if(!c)return;c.addEventListener("mouseenter",()=>{car.paused=true;carStart()});c.addEventListener("mouseleave",()=>{car.paused=false;carStart()});
+  c.addEventListener("focusin",()=>{car.paused=true;carStart()});c.addEventListener("focusout",()=>{car.paused=false;carStart()});
+  let x0=null;c.addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});c.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)carGo(car.i+(dx<0?1:-1));x0=null});carStart()}
+
+/* ---------- my views ---------- */
+function deptCard(d,icon,color,rows,go){return `<div class="dept" style="--c:${color}"><header><span class="ic">${ic(icon,18)}</span><span><b>${d}</b><small>${esc(SCHED[d]?SCHED[d].name+" · shift "+((curShift(d)||{}).k||"—")+" now":"")}</small></span></header>${rows.map(([k,v])=>`<div class="row"><span>${k}</span><b>${v}</b></div>`).join("")}<div class="go"><button class="btn sm" style="background:${color}" data-goto="${go}">Open ${d==="Generator"?"fuel & tanks":d+" overview"}</button></div></div>`}
+Object.assign(VIEWS,{
+ overview(){const al=alerts(),st=fuelStats(),lt=latestTraffic(),links=linkRows(lt),groups=["NOC","Generator","Security","Shared"];
+  return carouselHTML(al)+`
+  <h3>Departments</h3><div class="depts">
+   ${deptCard("NOC","wave","var(--noc)",[["Links at 90% or more",links.filter(x=>x.p>=90).length],["Active alarms",activeAlarms().length],["Open incidents",data.incidents.filter(i=>i.status!=="Resolved").length],["Staff on shift",onShift("NOC").length+" of "+byDept("NOC").length]],"noc")}
+   ${deptCard("Generator","fuel","var(--gen)",[["Next fuel order",st.orderDate?(st.phase==="empty"?"Now":fds(st.orderDate)):"—"],["Big tank",st.big.toFixed(0)+" / "+BIG+" barrels"],["Filter changes logged",data.filterChanges.length],["Staff on shift",onShift("Generator").length+" of "+byDept("Generator").length]],"fuel")}
+   ${deptCard("Security","shield","var(--sec)",[["Visitors on site",gateInside().length],["Passes to renew",clrDue().length],["Cameras active",data.cameras.filter(c=>c.status==="Active").length+" of "+data.cameras.length],["Staff on shift",onShift("Security").length+" of "+byDept("Security").length]],"security")}
+  </div>
+  <div class="grid g2" style="margin-top:14px"><div class="card" id="attn"><h3>Needs attention <span class="hint">· ${al.length} item${al.length===1?"":"s"}</span></h3>${al.length?`<div class="alerts">${al.map(x=>`<button class="alert" style="--c:${x.c}" data-goto="${x.go}"><span><b>${esc(x.t)}</b><small>${esc(x.dept)} · ${esc(x.d)}</small></span><i>Open</i></button>`).join("")}</div>`:`<div class="empty">Nothing needs attention right now.</div>`}</div>
+   <div class="card"><h3>Who is on shift</h3>${["NOC","Generator","Security"].map(d=>{const s=curShift(d),on=onShift(d);return `<div class="kv"><span><b>${esc(SCHED[d].name)}</b><div class="hint">Shift ${s?esc(s.k)+", "+fmt12(s.from)+" to "+fmt12(s.to):"—"}</div></span><span style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">${on.length?on.map(p=>`<span title="${esc(p.name)}">${av(p.name,d,28)}</span>`).join(""):`<span class="hint">Not assigned</span>`}</span></div>`}).join("")}
+    <div class="kv"><span><b>CLS Manager</b><div class="hint">Mohamed Dahir Ali</div></span><button class="btn ghost sm" data-goto="org">Reporting line</button></div></div></div>
+  ${groups.map(g=>`<h3>${g==="Shared"?"Shared by all teams":g}</h3><div class="tiles">${SECTIONS.filter(s=>s.group===g).map(s=>`<button class="tile" style="--c:${s.color}" data-goto="${s.id}"><span class="ic">${ic(s.icon,17)}</span><span><b>${esc(s.label)}</b><small>${esc(summary(s.id))}</small></span></button>`).join("")}</div>`).join("")}`},
+ schedule(){const m=nowMin();
+  const lane=(dept)=>SCHED[dept].shifts.map(s=>{let a=tmin(s.from),b=tmin(s.to);const segs=a<b?[[a,b]]:[[a,1440],[0,b]];const col=DHEX[dept];
+    return segs.map(([x,y])=>`<div class="blk ${inShift(s,m)?"now":""}" style="left:${x/1440*100}%;width:${(y-x)/1440*100}%;background:color-mix(in srgb,${col} ${inShift(s,m)?100:60}%,#94A3B8)">${esc(s.k)}</div>`).join("")}).join("")+`<div class="nowline" style="left:${m/1440*100}%"></div>`;
+  const tbl=dept=>`<div class="tablewrap"><table class="shtable" style="min-width:420px"><thead><tr><th>Shift</th><th>Start time</th><th>End time</th><th>Staff</th></tr></thead><tbody>${SCHED[dept].shifts.map(s=>{const keys=s.k.split(/\s*&\s*/),ppl=byDept(dept).filter(p=>p.shift===s.k||keys.includes(p.shift));
+    return `<tr class="${inShift(s,m)?"now":""}"><td><b class="mono">${esc(s.k)}</b>${inShift(s,m)?" "+pill("On now","ok"):""}</td><td>${fmt12(s.from)}</td><td>${fmt12(s.to)}${s.next?" (next day)":""}</td><td>${ppl.map(p=>esc(p.name)).join(", ")||`<span class="hint">Not assigned</span>`}</td></tr>`}).join("")}</tbody></table></div>`;
+  return head("Staff schedule overview","Shift times for the NOC team, generator operators and the security team. The red line marks the time now in Mogadishu. Assign each person to a shift from Reporting line & staff.")+
+  `<div class="card"><h3>24-hour view <span class="hint">· ${hhmm()} EAT</span></h3><div class="chart"><div class="sched">${["NOC","Generator","Security"].map(d=>`<b style="font-size:13px">${esc(SCHED[d].name)}</b><div class="lane">${lane(d)}</div>`).join("")}<span></span><div class="ticks">${["00","03","06","09","12","15","18","21","24"].map(t=>`<span>${t}</span>`).join("")}</div></div></div></div>
+  <div class="grid g3" style="margin-top:14px">${["NOC","Generator","Security"].map(d=>`<div><h3 style="margin-top:0;color:${DHEX[d]}">${esc(SCHED[d].name)}</h3>${tbl(d)}</div>`).join("")}</div>`},
+ org(){const P=people(),find=n=>P.find(p=>p.name===n),lead=P.filter(p=>p.dept==="Leadership");
+  const chain=[];let top=lead.find(p=>!p.reportsTo||!find(p.reportsTo))||lead[0];const seen=new Set();while(top&&!seen.has(top.name)){seen.add(top.name);chain.push(top);top=P.find(p=>p.reportsTo===top.name&&(p.dept==="Leadership"||p.dept==="Management"))}
+  const mgr=chain[chain.length-1];const teams=["NOC","Generator","Security","Support"];
+  const node=(p,isLead)=>`<div class="on ${isLead?"lead":""}" style="--c:${DHEX[p.dept]||"#334155"}"><b>${esc(p.name)}</b><span>${esc(p.role||"")}</span></div>`;
+  const tree=chain.length?`<div class="orgtree">${chain.map((p,i)=>(i?`<div class="ol"></div>`:"")+node(p,i===chain.length-1)).join("")}<div class="ol"></div>
+   <div class="ocols">${teams.map(t=>{const ppl=byDept(t);return ppl.length?`<div class="ocol" style="--c:${DHEX[t]}"><h4><span>${t==="Support"?"Support staff":t+" team"}</span><span>${ppl.length}</span></h4>${ppl.map(p=>`<div class="person">${av(p.name,t,30)}<span><b>${esc(p.name)}</b><small>${esc(p.role||"")}${p.shift?" · shift "+esc(p.shift):""}${p.reportsTo&&mgr&&p.reportsTo!==mgr.name?" · reports to "+esc(p.reportsTo):""}</small></span></div>`).join("")}</div>`:""}).join("")}</div></div>`:`<div class="empty">Add staff to draw the reporting line.</div>`;
+  return head("Reporting line & staff","All CLS NOC, generator and security staff report to the Mogadishu CLS Manager. The CLS Manager reports to the Head of Technical for Mogadishu and Bosaso, who reports to the Group Telecom CEO of Somtel, Bluecom and DARE1.")+
+  `<div class="card">${tree}</div><div class="grid g4" style="margin-top:14px">${teams.map(t=>stat(t==="Support"?"Support staff":t+" team",byDept(t).length,byDept(t).filter(p=>p.shift).length+" with a shift set",DHEX[t])).join("")}</div>
+  <h3>Staff directory</h3>${table("staff","staff")}`},
+ noc(){const lt=latestTraffic(),links=linkRows(lt),al=alerts().filter(x=>x.dept==="NOC"),a=avg(links.map(x=>x.p));
+  const env=[["PR","temp","Power Room temp","°C"],["PR","hum","Power Room humidity","%"],["DH","temp","Data Host temp","°C"],["DH","hum","Data Host humidity","%"]];
+  return `<section class="hero h-noc"><span class="eyebrow"><span class="live"><i></i>Live</span>NOC · Mogadishu Cable Landing Station · DARE1</span><h2>Good ${nowParts().h<12?"morning":nowParts().h<17?"afternoon":"evening"}, NOC team</h2>
+   <p>Link traffic, room readings, power systems, ports, devices and incidents.</p>${routeSVG()}
+   <div class="hero-grid"><div class="herostats"><button class="hs" data-goto="traffic"><b>${data.circuits.length||"—"}</b><span>links monitored</span></button><button class="hs" data-goto="traffic"><b>${links.filter(x=>x.p>=90).length}</b><span>high throughput links</span></button>
+    <button class="hs" data-goto="alarms"><b>${activeAlarms().length}</b><span>active alarms</span></button><button class="hs" data-goto="incidents"><b>${data.incidents.filter(i=>i.status!=="Resolved").length}</b><span>open incidents</span></button>
+    <button class="hs" data-goto="ciena"><b>${data.cienaPorts.filter(p=>p.status==="Active").length}<small style="font-size:14px;font-weight:500"> / ${data.cienaPorts.length||32}</small></b><span>Ciena ports active</span></button><button class="hs" data-goto="traffic"><b>${a!=null?Math.round(a)+"%":"—"}</b><span>average throughput</span></button></div>${dutyBox("NOC")}</div></section>
+  <div class="grid g4" style="margin-top:14px">${env.map(([r,m,n,u])=>{const l=envLatest(r,m);return stat(n,l?(l.night??l.day)+u:"—",l?`Day ${l.day??"—"}${u}, night ${l.night??"—"}${u} · ${fds(l.date)}`:"No reading yet",SEC.climate.color,"climate")}).join("")}</div>
+  <div class="grid g2" style="margin-top:14px"><div class="card"><h3>NOC needs attention</h3>${al.length?`<div class="alerts">${al.map(x=>`<button class="alert" style="--c:${x.c}" data-goto="${x.go}"><span><b>${esc(x.t)}</b><small>${esc(x.d)}</small></span><i>Open</i></button>`).join("")}</div>`:`<div class="empty">Nothing needs attention right now.</div>`}</div>
+   <div class="card"><h3>Maximum throughput by link${lt?` <span class="hint">· ${fd(lt.date)}</span>`:""}</h3>${links.length?`<div class="bars">${links.map(x=>`<div class="bar"><span class="nm" title="${esc(x.c.name)}">${esc(x.c.name)} <span class="hint mono">${esc(x.c.port||"")}</span></span><span class="track"><i style="width:${Math.min(100,x.p)}%;background:${tcolor(x.p)}"></i></span><b>${x.p}%</b></div>`).join("")}</div>
+    <div class="legend"><span><i style="background:#0EA5E9"></i>Low 1–50%</span><span><i style="background:#16A34A"></i>Mid 51–89%</span><span><i style="background:#DC2626"></i>High 90–100%</span></div>`:`<div class="empty">Add circuits and a nightly throughput record to see link usage.</div>`}</div></div>
+  <h3>NOC modules</h3><div class="tiles">${SECTIONS.filter(s=>s.group==="NOC"&&s.id!=="noc").map(s=>`<button class="tile" style="--c:${s.color}" data-goto="${s.id}"><span class="ic">${ic(s.icon,17)}</span><span><b>${esc(s.label)}</b><small>${esc(summary(s.id))}</small></span></button>`).join("")}</div>`},
+ climate(){return `<div class="tools"><div class="seg" role="group" aria-label="Room and reading">${[["PR","temp","Power Room temperature"],["PR","hum","Power Room humidity"],["DH","temp","Data Host Room temperature"],["DH","hum","Data Host Room humidity"]].map(([r,m,l])=>`<button type="button" data-env="${r}:${m}" aria-pressed="${envSel===r+":"+m}">${l}</button>`).join("")}</div></div>`+envView(...envSel.split(":"))},
+ fuel(){const st=fuelStats(),c=st.cur;let steps="";
+  if(c){const S1=c.small1,S2=c.small2;steps=`<div class="timeline">${c.order?`<div class="step done"><div class="b">✓</div><div><div class="t">Fuel ordered</div><div class="s">${fd(c.order)}</div></div></div>`:""}
+    <div class="step done"><div class="b">✓</div><div><div class="t">Fuel received, big tank full (40 barrels)</div><div class="s">${fd(c.received)}</div></div></div>
+    <div class="step ${S1?"done":"pred"}"><div class="b">${S1?"✓":"2"}</div><div><div class="t">First transfer: 20 barrels to the small tank</div><div class="s">${S1?fd(S1)+". 20 barrels stay in reserve.":"Expected around "+fd(st.transferDate)}</div></div></div>
+    <div class="step ${S2?"done":"pred"}"><div class="b">${S2?"✓":"3"}</div><div><div class="t">Second transfer: big tank empty, order fuel</div><div class="s">${S2?fd(S2):"Expected around "+fd(st.orderDate)+" ("+rel(st.orderDate)+")"}</div></div></div></div>
+    <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">${!S1?`<button class="btn" data-quick="small1">Record first transfer today</button>`:!S2?`<button class="btn" data-quick="small2">Record second transfer today</button>`:`<button class="btn" data-addc="fuel">+ Record new fuel delivery</button>`}<button class="btn ghost" data-edit="fuel" data-id="${c.id}">Edit this cycle</button></div>`}
+  return slideGEN().replace('class="hero h-gen"','class="hero h-gen" style="margin-bottom:14px"')+`<div class="grid g4">${stat("Next fuel order",st.orderDate?(st.phase==="empty"?"Order now":fds(st.orderDate)):"—",st.orderDate?(st.phase==="empty"?"Small tank runs out "+fds(st.runOut):rel(st.orderDate)):"","var(--gen)")}
+   ${stat("Average delivery lasts",st.avgCycle.toFixed(1)+" days","last "+Math.min(6,st.done.length)+" cycles","var(--gen)")}${stat("Days per 20 barrels",st.avg20.toFixed(1),"one small tank","var(--gen)")}${stat("Consumption",st.perDay.toFixed(2)+" bbl/day","≈ "+Math.round(st.perDay*159)+" litres a day","var(--gen)")}</div>
+  <div class="grid g2" style="margin-top:14px"><div class="card"><h3>Current cycle</h3>${c?steps:`<div class="empty">Record your first fuel delivery to start tracking.</div>`}</div>
+   <div class="card"><h3>Days from delivery to next fuel order</h3>${cycleChart(st)}<div class="legend"><span><i style="background:#D97706"></i>Days per delivery</span><span><i style="background:#F59E0B"></i>Shorter than average</span><span>Dashed line: average</span></div></div></div>
+  <h3>Fuel history</h3>${table("fuel","fuel")}`},
+ filters(){const fdue=filterDue(),fo=filterOrderDue();
+  return head("Generator filters","Filters are changed once a month on each generator and ordered twice a year.")+
+  `<div class="grid g2"><div class="card"><h3>Monthly change status</h3>${fdue.map(f=>`<div class="kv"><span><b>${f.g}</b><div class="hint">Last changed ${f.last?fd(f.last):"not recorded"}</div></span><span>${pill(f.next?(f.days<0?"Overdue ":"Due ")+fds(f.next):"No record",dueTone(f.days))}</span></div>`).join("")}</div>
+   <div class="card"><h3>Twice-yearly order</h3><div class="kv"><b>Last order</b><span>${fo.last?fd(fo.last):"—"}</span></div><div class="kv"><b>Next order due</b><span>${fo.next?pill(fd(fo.next),dueTone(diff(today(),fo.next)-7)):pill("No order logged","neutral")}</span></div>
+    <div class="kv"><b>Changes since last order</b><span>${fo.last?data.filterChanges.filter(r=>r.date>=fo.last).length:data.filterChanges.length}</span></div></div></div>
+  <h3>Filter change log</h3>${table("filterChanges","filterChanges")}<h3>Filter orders</h3>${table("filterOrders","filterOrders")}`},
+ security(){const al=alerts().filter(x=>x.dept==="Security"),td=todayIso(),gt=data.gateLog.filter(g=>g.date===td);
+  return slideSEC().replace('class="hero h-sec"','class="hero h-sec" style="margin-bottom:14px"')+
+  `<div class="grid g2"><div class="card"><h3>Security needs attention</h3>${al.length?`<div class="alerts">${al.map(x=>`<button class="alert" style="--c:${x.c}" data-goto="${x.go}"><span><b>${esc(x.t)}</b><small>${esc(x.d)}</small></span><i>Open</i></button>`).join("")}</div>`:`<div class="empty">Nothing needs attention right now.</div>`}</div>
+   <div class="card"><h3>Gate log today <span class="hint">· ${fd(td)}</span></h3>${gt.length?gt.map(g=>`<div class="kv"><span><b>${esc(g.name)}</b><div class="hint">${esc(g.gate)} · ${esc(g.tin||"—")} / ${esc(g.tout||"—")}</div></span>${sp(g.status)}</div>`).join(""):`<div class="empty">No gate entries recorded today.</div>`}<div style="margin-top:10px"><button class="btn sm" data-addc="gateLog">+ Log gate entry</button></div></div></div>
+  <h3>Security team</h3><div class="grid g4">${byDept("Security").map(p=>{const tk=data.tasks.filter(t=>t.assignee===p.name&&t.status!=="Done").length,c=data.clearances.find(x=>x.holder===p.name);
+   return `<div class="card stat" style="--c:var(--sec)"><div style="display:flex;gap:10px;align-items:center">${av(p.name,"Security",36)}<span style="min-width:0"><b style="display:block;line-height:1.2">${esc(p.name)}</b><span class="k">${esc(p.role||"")}</span></span></div>
+    <div class="kv" style="margin-top:8px"><span class="hint">Shift</span><b class="mono">${dash(p.shift)}</b></div><div class="kv"><span class="hint">Open tasks</span><b>${tk}</b></div><div class="kv"><span class="hint">Airport pass</span>${c?clrPill(c):pill("Not recorded","neutral")}</div></div>`}).join("")}</div>
+  <h3>Shift reports</h3>${table("secReports","secReports")}`},
+ gatelog(){const G=data.gateLog,by=s=>G.filter(g=>g.status===s).length;
+  return head("Visitor gate log","Every visitor, contractor and vehicle cleared through the airport gates and the DARE1 site gate. Approve, check in and check out from the Status column.")+
+  `<div class="grid g4">${stat("Waiting for clearance",by("Requested"),"requested","var(--info)")}${stat("On site now",by("Inside"),"checked in, not out","var(--warn)")}${stat("Entries today",G.filter(g=>g.date===todayIso()).length,fd(today()),"var(--ok)")}${stat("Denied",by("Denied"),"all time","var(--bad)")}</div>
+  <h3>Gate log</h3>${table("gateLog","gateLog")}`},
+ clearance(){const C=data.clearances.map(r=>({r,...clr(r)})),v=C.filter(x=>x.days!=null&&x.days>14).length,soon=C.filter(x=>x.days!=null&&x.days>=0&&x.days<=14).length,ex=C.filter(x=>x.days!=null&&x.days<0).length,nd=C.filter(x=>x.days==null).length;
+  return head("Airport compound gate clearance","Access clearance for all CLS staff and the two vehicles at the Mogadishu Airport compound gate. Each clearance lasts three months and is renewed at the AMISOM office.")+
+  `<div class="grid g4">${stat("Valid",v,"more than 14 days left","var(--ok)")}${stat("Renew now",soon,"14 days or less","var(--warn)")}${stat("Expired",ex,"","var(--bad)")}${stat("No date recorded",nd,"add the issue date","var(--muted)")}</div>
+  <h3>Staff clearance</h3>${table("clr-staff","clearances",{preset:{type:"Staff"},filter:r=>r.type!=="Vehicle"})}<h3>Vehicles</h3>${table("clr-veh","clearances",{preset:{type:"Vehicle"},filter:r=>r.type==="Vehicle",title:"vehicle clearance"})}`},
+ tasks(){const T=data.tasks,f=taskDept;const rows=f==="All"?null:r=>deptOf(r.assignee)===f;
+  const perf=crew().filter(p=>f==="All"||p.dept===f).map(p=>{const mine=T.filter(t=>t.assignee===p.name),done=mine.filter(t=>t.status==="Done"),rated=done.filter(t=>t.rating);return {p,open:mine.length-done.length,done:done.length,od:mine.filter(t=>t.status!=="Done"&&t.due&&parseD(t.due)<today()).length,avg:rated.length?rated.reduce((a,t)=>a+ +t.rating,0)/rated.length:null}}).filter(x=>x.open+x.done>0||f!=="All");
+  return head("Staff tasks","Assign work to anyone at the CLS, follow it up and rate how it was done. Filter by department.")+
+  `<div class="tools"><div class="seg" role="group" aria-label="Department">${["All","NOC","Generator","Security","Support"].map(d=>`<button type="button" data-tdept="${d}" aria-pressed="${f===d}">${d}</button>`).join("")}</div></div>
+  <div class="grid g4">${stat("Open",T.filter(t=>t.status!=="Done"&&(!rows||rows(t))).length,"to do or in progress")}${stat("Overdue",T.filter(t=>t.status!=="Done"&&t.due&&parseD(t.due)<today()&&(!rows||rows(t))).length,"","var(--bad)")}${stat("Done",T.filter(t=>t.status==="Done"&&(!rows||rows(t))).length,"","var(--ok)")}</div>
+  <h3>Tasks</h3>${table("tasks-"+f,"tasks",{filter:rows||undefined})}
+  <h3>Workload</h3><div class="tablewrap"><table style="min-width:480px"><thead><tr><th>Name</th><th>Department</th><th>Open</th><th>Done</th><th>Overdue</th><th>Rating</th></tr></thead><tbody>${perf.map(x=>`<tr><td><b>${esc(x.p.name)}</b></td><td>${deptCell(x.p.name)}</td><td>${x.open}</td><td>${x.done}</td><td>${x.od?pill(String(x.od),"bad"):"0"}</td><td>${x.avg==null?"—":`<span class="stars">★</span> ${x.avg.toFixed(1)}`}</td></tr>`).join("")||`<tr><td colspan="6" class="empty">No tasks assigned yet.</td></tr>`}</tbody></table></div>`},
+ painting(){const pd=paintDue(),cur=pd.open||[...data.painting].sort(SCHEMAS.painting.sort)[0];
+  return head("Anti-corrosion painting","Rust treatment and painting of the generators, tanks, gates, building steel and AC units. Done twice a year.")+
+  `<div class="grid g2"><div class="card"><h3>${cur?esc(cur.round):"No round yet"}</h3>${cur?`<div class="progress"><i style="width:${Math.round((cur.areas||[]).length/AREAS.length*100)}%"></i></div>
+   <div class="chips" style="margin-top:12px">${AREAS.map(a=>`<button class="chip ${(cur.areas||[]).includes(a)?"on":""}" data-area="${esc(a)}" data-id="${cur.id}">${(cur.areas||[]).includes(a)?"✓ ":""}${esc(a)}</button>`).join("")}</div><p class="hint">Tap an area to mark it painted.</p>`:`<button class="btn" data-addc="painting">+ Start painting round</button>`}</div>
+   <div class="card"><h3>Schedule</h3><div class="kv"><b>Last completed round</b><span>${pd.last?fd(pd.last):"—"}</span></div><div class="kv"><b>Next round due</b><span>${pd.next?pill(fd(pd.next),dueTone(diff(today(),pd.next)-14)):pill("Not scheduled","neutral")}</span></div><div class="kv"><b>Rounds recorded</b><span>${data.painting.length}</span></div></div></div>
+  <h3>Painting rounds</h3>${table("painting","painting")}`},
+ uniforms(){const yr=String(today().getFullYear()),got=new Set(data.uniforms.filter(u=>String(u.orderDate||"").startsWith(yr)).map(u=>u.staff));
+  return head("Uniforms","Uniform and safety kit for every CLS team, ordered once a year per person.")+
+  `<div class="grid g4">${["NOC","Generator","Security","Support"].map(d=>{const ppl=byDept(d),n=ppl.filter(p=>got.has(p.name)).length;return `<div class="card stat" style="--c:${DHEX[d]}"><div class="k">${d==="Support"?"Support staff":d+" team"}</div><div class="v">${n} / ${ppl.length}</div><div class="d">ordered in ${yr}</div><div class="progress" style="margin-top:8px;--c:${DHEX[d]}"><i style="width:${ppl.length?n/ppl.length*100:0}%"></i></div>
+   <div class="chips" style="margin-top:10px">${ppl.map(p=>`<span class="pill ${got.has(p.name)?"ok":"neutral"}" title="${esc(p.name)}">${esc(p.name.split(" ")[0])}</span>`).join("")}</div></div>`}).join("")}</div>
+  <h3>Uniform orders</h3>${table("uniforms","uniforms")}`},
+ spares(){return invView("Spare","Spare inventory","Spare cards, modules and SFPs for the Ciena, Tejas, Huawei and Cisco equipment, and spare parts for the three generators.").replace('<h3>Inventory record</h3>',`<h3>Generator spares <span class="hint">· use + and − as items go in and out</span></h3>${table("genSpares","genSpares")}<h3>Datacenter spares record</h3>`)},
+ store(){return invView("Store","Office block store","General items in the office block store: fire extinguishers, tools, paint, electrical and generator materials.")}
+});
+let envSel="PR:temp",taskDept="All";
+
+/* ---------- render ---------- */
+let active="overview",lastActive=null;
+function renderNav(){let g="",h="";SECTIONS.forEach(s=>{if(s.group!==g){g=s.group;h+=`<div class="grp" style="--gc:${GROUPS[g]}"><i></i>${g==="Shared"?"Shared by all teams":g}</div>`}const n=badge(s.id);
+  h+=`<button class="nv" style="--c:${s.color}" data-goto="${s.id}" ${s.id===active?'aria-current="page"':""}><span class="ic">${ic(s.icon)}</span><span class="t">${esc(s.label)}</span>${n?`<span class="n">${n}</span>`:""}</button>`});$("sidenav").innerHTML=h}
+function countUp(){if(reduced())return;document.querySelectorAll("#view .stat .v, #view .hs b").forEach(el=>{if(el.children.length)return;const t=el.textContent.trim();if(!/^\d{1,4}$/.test(t))return;const end=+t;if(end<2)return;const t0=performance.now();
+  const step=now=>{const k=Math.min(1,(now-t0)/700);el.textContent=Math.round(end*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)})}
+function render(quiet){dirty=false;const s=SEC[active];document.documentElement.style.setProperty("--accent",s.color);
+  const f=document.activeElement,fid=f&&f.dataset&&f.dataset.search?f.id:null,pos=fid?f.selectionStart:0;
+  renderNav();$("crumbGrp").textContent=s.group==="Shared"?"Shared by all teams":s.group;$("crumbTtl").textContent=s.label;
+  Object.keys(CTX).forEach(k=>delete CTX[k]);const v=$("view");v.innerHTML=VIEWS[active]();
+  if(lastActive!==active){v.style.animation="none";void v.offsetWidth;v.style.animation="";countUp()}lastActive=active;
+  Object.keys(CTX).forEach(k=>{const c=$("cnt-"+k);if(c)c.textContent=rowsFor(k).length+" records"});
+  if(active==="overview")carBind();else clearTimeout(car.timer);
+  tick();if(fid&&$(fid)){$(fid).focus();try{$(fid).setSelectionRange(pos,pos)}catch(e){}}}
+function tick(){const p=nowParts(),t=hhmm();$("chipClock").innerHTML=`<b>${WD[today().getDay()]} ${fds(today())} · ${t}</b> EAT`;
+  const s=["NOC","Generator","Security"].map(d=>(curShift(d)||{}).k||"—");$("chipShift").innerHTML=`Shifts now <b>NOC ${esc(s[0])} · Gen ${esc(s[1])} · Sec ${esc(s[2])}</b>`;
+  document.querySelectorAll(".clk").forEach(e=>e.textContent=t+" EAT")}
+let lastMin=nowMin();setInterval(()=>{tick();const m=nowMin();if(m!==lastMin){lastMin=m;if($("backdrop").hidden&&(active==="schedule"||(m%30===0)))render(true)}},15000);
+function go(id){if(!SEC[id])return;active=id;closeSide();render();window.scrollTo({top:0});try{history.replaceState(null,"","#"+id)}catch(e){}}
+function closeSide(){$("side").classList.remove("open");$("scrim").hidden=true}
+function toast(m){const t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,3200)}
+
+/* ---------- modal ---------- */
+let formCtx=null;
+function closeModal(){$("backdrop").hidden=true;formCtx=null;if(dirty)render(true)}
+function openForm(col,rec,preset){const S=SCHEMAS[col],fields=S.fields,isNew=!rec;rec=rec||{};formCtx={col,id:rec.id,preset:preset||{},fields,rec};
+  const val=f=>{let v=rec[f.k];if(v==null&&isNew){v=(preset&&preset[f.k]!=null)?preset[f.k]:typeof f.def==="function"?f.def():f.def}return v==null?"":v};
+  $("modal").innerHTML=`<header><h4>${isNew?"Add":"Edit"} ${esc(S.title)}</h4><button class="icon-btn" data-close aria-label="Close">✕</button></header><form id="recForm" novalidate><div class="body"><div class="form">${fields.map(f=>{const v=val(f),id="f-"+f.k,lab=`${esc(f.label)}${f.req?" *":""}`,hint=f.hint?`<span class="hint">${esc(f.hint)}</span>`:"";let inp;
+    if(f.type==="multi"){const sel=Array.isArray(v)?v:[];return `<div class="lbl full" data-multi="${f.k}">${lab}<div class="chips">${f.options.map(o=>`<button type="button" class="chip ${sel.includes(o)?"on":""}" data-chip="${esc(o)}" aria-pressed="${sel.includes(o)}">${esc(o)}</button>`).join("")}</div>${hint}</div>`}
+    if(f.type==="select"){let o=typeof f.options==="function"?f.options():f.options;o=[...o];if(v!==""&&!o.includes(String(v)))o.push(String(v));if(!o.includes(""))o.unshift("");inp=`<select id="${id}" name="${f.k}">${o.map(x=>`<option ${String(x)===String(v)?"selected":""}>${esc(x)}</option>`).join("")}</select>`}
+    else if(f.type==="textarea")inp=`<textarea id="${id}" name="${f.k}">${esc(v)}</textarea>`;
+    else inp=`<input id="${id}" name="${f.k}" type="${f.type||"text"}" ${f.type==="number"?'step="any" inputmode="decimal"':""} value="${esc(v)}">`;
+    return `<label class="${f.full||f.type==="textarea"?"full":""}" for="${id}">${lab}${inp}${hint}</label>`}).join("")}</div><p class="hint" id="formErr" style="color:var(--bad);margin:10px 0 0" hidden></p></div>
+   <footer><button type="button" class="btn ghost" data-close>Cancel</button><button class="btn" type="submit">Save</button></footer></form>`;
+  $("backdrop").hidden=false;const first=$("modal").querySelector("input,select,textarea");if(first)first.focus()}
+function confirmDel(col,id){formCtx={del:{col,id}};$("modal").innerHTML=`<header><h4>Delete this record?</h4><button class="icon-btn" data-close aria-label="Close">✕</button></header><div class="body"><p style="margin:4px 0">This removes the ${esc(SCHEMAS[col].title)} for everyone who uses this dashboard. It cannot be undone.</p></div><footer><button class="btn ghost" data-close>Keep it</button><button class="btn danger" id="doDel">Delete</button></footer>`;$("backdrop").hidden=false;$("doDel").focus()}
+async function submitForm(){const {col,id,preset,fields,rec}=formCtx;const out={...rec,...preset};delete out.id;
+  for(const f of fields){if(f.type==="multi"){out[f.k]=[...$("modal").querySelectorAll(`[data-multi="${f.k}"] .chip.on`)].map(c=>c.dataset.chip);continue}
+    const el=$("f-"+f.k);if(!el)continue;let v=el.value.trim();if(f.req&&v===""){const e=$("formErr");e.textContent="Fill in “"+f.label+"” to save.";e.hidden=false;el.focus();return}
+    if(f.type==="number"){v=v===""?null:num(v)}if(v===""||v==null)delete out[f.k];else out[f.k]=v}
+  if(col==="cienaPorts"){const dup=data.cienaPorts.find(p=>String(p.slot)===String(out.slot)&&+p.port===+out.port&&p.id!==id);if(dup){const e=$("formErr");e.textContent="Port 6-"+out.slot+"-"+out.port+" is already recorded. Edit that port instead.";e.hidden=false;return}}
+  if(col==="tasks"&&out.status==="Done"&&!out.completed)out.completed=todayIso();
+  if(col==="problems"&&out.status==="Fixed"&&!out.fixedDate)out.fixedDate=todayIso();
+  if(col==="painting"&&(out.areas||[]).length===AREAS.length&&!out.completedDate)out.completedDate=todayIso();
+  const ok=await saveRec(col,{id,...out});if(ok){closeModal();toast("Saved")}}
+function csv(key){const c=CTX[key],S=SCHEMAS[c.col],F=S.fields,rows=rowsFor(key);const q=v=>'"'+String(v==null?"":Array.isArray(v)?v.join("; "):v).replace(/"/g,'""')+'"';
+  const txt=[F.map(f=>q(f.label)).join(","),...rows.map(r=>F.map(f=>q(r[f.k])).join(","))].join("\r\n");
+  downloads.save({filename:"cls-"+key+"-"+todayIso()+".csv",data:"﻿"+txt}).then(()=>toast("Exported")).catch(e=>{if(e&&e.code!=="declined")toast("Could not export this table here.")})}
+
+/* ---------- theme ---------- */
+const TK="cls-hub-theme";
+function applyTheme(t){const r=document.documentElement;if(t==="light"||t==="dark")r.setAttribute("data-theme",t);else r.removeAttribute("data-theme");document.querySelectorAll(".theme button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.t===t)))}
+let theme=null;try{theme=localStorage.getItem(TK)}catch(e){}
+if(theme)applyTheme(theme);else{const cur=document.documentElement.getAttribute("data-theme")||"system";document.querySelectorAll(".theme button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.t===cur)))}
+document.querySelector(".theme").addEventListener("click",e=>{const b=e.target.closest("[data-t]");if(!b)return;theme=b.dataset.t;applyTheme(theme);try{localStorage.setItem(TK,theme)}catch(e){}});
+
+/* ---------- events ---------- */
+document.addEventListener("click",async e=>{
+  const chip=e.target.closest("#modal .chip[data-chip]");if(chip){chip.classList.toggle("on");chip.setAttribute("aria-pressed",String(chip.classList.contains("on")));return}
+  const t=e.target.closest("[data-goto],[data-add],[data-addc],[data-addp],[data-edit],[data-del],[data-csv],[data-close],[data-car],[data-cdot],[data-env],[data-tdept],[data-qty],[data-area],[data-quick],[data-gs],#burger,#scrim,#doDel");
+  if(!t){if(e.target===$("backdrop"))closeModal();return}
+  if(t.id==="burger"){$("side").classList.add("open");$("scrim").hidden=false}
+  else if(t.id==="scrim")closeSide();
+  else if(t.id==="doDel"){const d=formCtx.del;closeModal();delRec(d.col,d.id).then(()=>toast("Deleted"))}
+  else if(t.dataset.close!==undefined)closeModal();
+  else if(t.dataset.car)carGo(car.i+ +t.dataset.car);
+  else if(t.dataset.cdot)carGo(+t.dataset.cdot);
+  else if(t.dataset.env){envSel=t.dataset.env;render()}
+  else if(t.dataset.tdept){taskDept=t.dataset.tdept;render()}
+  else if(t.dataset.goto){if(t.dataset.scroll&&active===t.dataset.goto){const el=$(t.dataset.scroll);if(el)el.scrollIntoView({behavior:reduced()?"auto":"smooth"})}else go(t.dataset.goto)}
+  else if(t.dataset.add){const c=CTX[t.dataset.add];openForm(c.col,null,c.preset)}
+  else if(t.dataset.addc)openForm(t.dataset.addc,null,{});
+  else if(t.dataset.addp){const [slot,port]=t.dataset.addp.split(":");openForm("cienaPorts",null,{slot,port:+port})}
+  else if(t.dataset.edit){const r=data[t.dataset.edit].find(x=>x.id===t.dataset.id);if(r)openForm(t.dataset.edit,r,{})}
+  else if(t.dataset.del)confirmDel(t.dataset.del,t.dataset.id);
+  else if(t.dataset.csv)csv(t.dataset.csv);
+  else if(t.dataset.qty){const r=data.genSpares.find(x=>x.id===t.dataset.id);if(!r)return;t.disabled=true;await saveRec("genSpares",{...r,qty:Math.max(0,(+r.qty||0)+Number(t.dataset.qty))})}
+  else if(t.dataset.area){const r=data.painting.find(x=>x.id===t.dataset.id);if(!r)return;const a=new Set(r.areas||[]);a.has(t.dataset.area)?a.delete(t.dataset.area):a.add(t.dataset.area);
+    const nr={...r,areas:AREAS.filter(x=>a.has(x))};if(nr.areas.length===AREAS.length&&!nr.completedDate)nr.completedDate=todayIso();t.disabled=true;await saveRec("painting",nr)}
+  else if(t.dataset.quick){const st=fuelStats();if(!st.cur)return;t.disabled=true;if(await saveRec("fuel",{...st.cur,[t.dataset.quick]:todayIso()}))toast("Recorded for today")}
+  else if(t.dataset.gs){const [id,s]=t.dataset.gs.split(":"),r=data.gateLog.find(x=>x.id===id);if(!r)return;const n={...r,status:s};if(s==="Inside"&&!n.tin)n.tin=hhmm();if(s==="Exited"&&!n.tout)n.tout=hhmm();t.disabled=true;if(await saveRec("gateLog",n))toast(s==="Approved"?"Clearance approved":s==="Inside"?"Checked in at "+n.tin:"Checked out at "+n.tout)}
+});
+document.addEventListener("submit",e=>{if(e.target.id==="recForm"){e.preventDefault();submitForm()}});
+document.addEventListener("input",e=>{const k=e.target.dataset&&e.target.dataset.search;if(!k)return;searchQ[k]=e.target.value;$("tbl-"+k).innerHTML=tbody(k);const c=$("cnt-"+k);if(c)c.textContent=rowsFor(k).length+" records"});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(!$("backdrop").hidden)closeModal();else closeSide()}
+  if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches(".stat[data-goto]")){e.preventDefault();go(e.target.dataset.goto)}
+  if(active==="overview"&&$("backdrop").hidden&&(e.key==="ArrowRight"||e.key==="ArrowLeft")&&e.target.closest&&e.target.closest("#car"))carGo(car.i+(e.key==="ArrowRight"?1:-1))});
+const h0=(location.hash||"").slice(1);if(SEC[h0])active=h0;
+initStore();
+})();
+</script>
