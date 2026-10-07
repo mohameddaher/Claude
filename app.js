@@ -42,8 +42,18 @@ let renderQueued=false;
 function queueRender(){ if(renderQueued)return; renderQueued=true; requestAnimationFrame(()=>{renderQueued=false;render()}); }
 function setSync(on,txt){document.getElementById("syncDot").className="dot"+(on?" on":"");document.getElementById("syncLbl").textContent=txt}
 
+/* Adds the Head of Technical and the Network and Upstream Internet department to the reporting line once */
+const ORG_V="cls-gen-org-v2";
+function migrateOrg(){
+  try{if(localStorage.getItem(ORG_V))return}catch(e){}
+  const head="Abdulghani Saeed";
+  if(!data.staff.some(s=>s.role===HEAD_ROLE)) data.staff.push({id:uid(),name:head,role:HEAD_ROLE,dept:DEPT_TECH,reportsTo:"",order:0});
+  data.staff.filter(s=>s.role==="CLS Manager"&&!s.reportsTo).forEach(s=>s.reportsTo=head);
+  if(!data.staff.some(s=>s.role==="Network Manager")) data.staff.push({id:uid(),name:"Network Manager (vacant)",role:"Network Manager",dept:DEPT_NET,reportsTo:head,order:10});
+  saveLocal(); try{localStorage.setItem(ORG_V,"1")}catch(e){}
+}
 function initStore(){
-  loadLocal(); render(); setSync(true,"Saved in this browser");
+  loadLocal(); migrateOrg(); render(); setSync(true,"Saved in this browser");
 }
 /* Saves a text file to the device (CSV exports and backups) */
 const downloads={save({filename,data,type}){
@@ -75,6 +85,10 @@ function restoreData(file){
 
 /* ---------- Module definitions ---------- */
 const staffNames=()=>data.staff.map(s=>s.name).sort();
+const HEAD_ROLE="Head of Technical", DEPT_CLS="CLS Generators", DEPT_NET="Network and Upstream Internet", DEPT_TECH="Technical";
+const ROLES=[HEAD_ROLE,"CLS Manager","Mechanic","Gen Operator","Network Manager","Other"];
+const DEPTS=[DEPT_TECH,DEPT_CLS,DEPT_NET];
+const deptOf=s=>s.dept||(s.role===HEAD_ROLE?DEPT_TECH:s.role==="Network Manager"?DEPT_NET:DEPT_CLS);
 const TABS=[
  {id:"overview",label:"Overview",color:"var(--overview)",icon:"M3 12h4l3 8 4-16 3 8h4"},
  {id:"fuel",label:"Fuel",color:"var(--fuel)",icon:"M3 22h12M4 9h10M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0V9.83a2 2 0 0 0-.59-1.42L18 5"},
@@ -147,9 +161,10 @@ const SCHEMAS={
      {k:"size",label:"Size"},{k:"qty",label:"Sets"},{k:"receivedDate",label:"Received",f:r=>r.receivedDate?fd(r.receivedDate):`<span class="pill warn">Awaiting</span>`}],
    sort:(a,b)=>(b.orderDate||"").localeCompare(a.orderDate||"")},
  staff:{title:"staff member",fields:[
-   {k:"name",label:"Full name",req:1},{k:"role",label:"Role",type:"select",options:["CLS Manager","Mechanic","Gen Operator","Other"]},
+   {k:"name",label:"Full name",req:1},{k:"role",label:"Role / title",type:"select",options:ROLES},
+   {k:"dept",label:"Department",type:"select",options:DEPTS,def:DEPT_CLS},
    {k:"reportsTo",label:"Reports to",type:"select",options:staffNames},{k:"phone",label:"Phone"},{k:"order",label:"Sort order",type:"number"}],
-   sort:(a,b)=>(a.order||99)-(b.order||99)||(a.name||"").localeCompare(b.name||"")},
+   sort:(a,b)=>(a.order===0?0:a.order||99)-(b.order===0?0:b.order||99)||(a.name||"").localeCompare(b.name||"")},
  tasks:{title:"task",fields:[
    {k:"title",label:"Task",req:1,full:1},{k:"assignee",label:"Assigned to",type:"select",options:staffNames,req:1},
    {k:"generator",label:"Generator / area",type:"select",options:[...GENS_ALL,"Fuel","Generator hall","Other"]},
@@ -409,14 +424,17 @@ const VIEWS={
   const got=new Set(data.uniforms.filter(u=>(u.orderDate||"").startsWith(String(yr))).map(u=>u.staff));
   return head("Staff uniforms","Uniforms are ordered once a year for every generator staff member.")+
   `<div class="grid g2"><div class="card"><h3 style="margin-top:0">${yr} order status</h3>
-   ${data.staff.length?[...data.staff].sort(SCHEMAS.staff.sort).map(s=>`<div class="gen"><div><b>${esc(s.name)}</b><div class="hint">${esc(s.role||"")}</div></div>${got.has(s.name)?`<span class="pill ok">Ordered</span>`:`<span class="pill neutral">Not yet</span>`}</div>`).join(""):`<div class="empty">Add staff in the Staff & tasks tab.</div>`}</div>
+   ${data.staff.some(s=>deptOf(s)===DEPT_CLS)?[...data.staff].filter(s=>deptOf(s)===DEPT_CLS).sort(SCHEMAS.staff.sort).map(s=>`<div class="gen"><div><b>${esc(s.name)}</b><div class="hint">${esc(s.role||"")}</div></div>${got.has(s.name)?`<span class="pill ok">Ordered</span>`:`<span class="pill neutral">Not yet</span>`}</div>`).join(""):`<div class="empty">Add staff in the Staff & tasks tab.</div>`}</div>
    <div class="card"><h3 style="margin-top:0">Schedule</h3><div class="gen"><b>Last order</b><span>${ud.last?fd(ud.last):"—"}</span></div>
    <div class="gen"><b>Next yearly order</b><span class="pill ${ud.next?dueTone(diff(today(),ud.next)-30):"neutral"}">${ud.next?fd(ud.next):"Not scheduled"}</span></div></div></div>
   <h3>Uniform orders</h3>${table("uniforms")}`;
  },
  staff(){
   const staff=[...data.staff].sort(SCHEMAS.staff.sort);
-  const mgr=staff.filter(s=>s.role==="CLS Manager"), mech=staff.filter(s=>s.role==="Mechanic"), ops=staff.filter(s=>s.role==="Gen Operator"), oth=staff.filter(s=>!["CLS Manager","Mechanic","Gen Operator"].includes(s.role));
+  const heads=staff.filter(s=>s.role===HEAD_ROLE), cls=staff.filter(s=>s.role!==HEAD_ROLE&&deptOf(s)===DEPT_CLS), net=staff.filter(s=>s.role!==HEAD_ROLE&&deptOf(s)===DEPT_NET);
+  const mgr=cls.filter(s=>s.role==="CLS Manager"), mech=cls.filter(s=>s.role==="Mechanic"), ops=cls.filter(s=>!["CLS Manager","Mechanic"].includes(s.role));
+  const netMgr=net.filter(s=>s.role==="Network Manager"), netOth=net.filter(s=>s.role!=="Network Manager");
+  const tiers=rows=>rows.filter(r=>r.length).map(r=>`<div class="orgrow">${r.map(node).join("")}</div>`).join(`<div class="orgline"></div>`);
   const node=s=>`<div class="orgnode"><b>${esc(s.name)}</b><span>${esc(s.role||"")}</span> <button class="icon-btn" style="width:24px;height:24px;margin-left:4px" data-edit="staff" data-id="${s.id}" aria-label="Edit ${esc(s.name)}">✎</button></div>`;
   const perf=staff.map(s=>{const ts=data.tasks.filter(t=>t.assignee===s.name);const done=ts.filter(t=>t.status==="Done");
     const onTime=done.filter(t=>t.due&&t.completed&&t.completed<=t.due).length; const withDue=done.filter(t=>t.due&&t.completed).length;
@@ -425,9 +443,11 @@ const VIEWS={
     return {s,total:ts.length,done:done.length,open:ts.length-done.length,od,onTime:withDue?Math.round(onTime/withDue*100):null,avg}});
   return head("Staff & tasks","Assign work to the generator team, follow it up, and rate how each task was done.",`<button class="btn" data-add="tasks">+ Assign task</button>`)+
   `<div class="grid g2"><div class="card"><h3 style="margin-top:0">Reporting line</h3><div class="org">
-   ${mgr.length?`<div class="orgrow">${mgr.map(node).join("")}</div><div class="orgline"></div>`:""}
-   ${mech.length?`<div class="orgrow">${mech.map(node).join("")}</div><div class="orgline"></div>`:""}
-   <div class="orgrow">${ops.map(node).join("")}${oth.map(node).join("")}</div></div>
+   ${heads.length?`<div class="orgrow">${heads.map(node).join("")}</div><div class="orgline"></div>`:""}
+   <div class="orgdepts">
+    <div class="orgdept"><div class="orgdept-t">${esc(DEPT_CLS)}</div>${tiers([mgr,mech,ops])||`<div class="hint">No staff yet.</div>`}</div>
+    <div class="orgdept"><div class="orgdept-t">${esc(DEPT_NET)}</div>${tiers([netMgr,netOth])||`<div class="hint">No staff yet.</div>`}</div>
+   </div></div>
    <div style="margin-top:14px"><button class="btn ghost sm" data-add="staff">+ Add staff member</button></div></div>
    <div class="card"><h3 style="margin-top:0">Performance</h3><div class="tablewrap" style="border:0"><table style="min-width:420px"><thead><tr><th>Name</th><th>Open</th><th>Done</th><th>Overdue</th><th>On time</th><th>Rating</th></tr></thead><tbody>
     ${perf.map(p=>`<tr><td><b>${esc(p.s.name)}</b></td><td>${p.open}</td><td>${p.done}</td><td>${p.od?`<span class="pill bad">${p.od}</span>`:"0"}</td><td>${p.onTime==null?"—":p.onTime+"%"}</td><td>${p.avg==null?"—":`<span class="stars">★</span> ${p.avg.toFixed(1)}`}</td></tr>`).join("")||`<tr><td colspan="6" class="empty">No staff yet.</td></tr>`}

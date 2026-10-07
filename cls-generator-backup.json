@@ -652,7 +652,7 @@
       "areas": [],
       "completedDate": "2026-04-20",
       "doneBy": "Team Waberi",
-      "notes": "The team has successfully completed the anti-corrosion painting works for the following assets and facilities: \uf0b7 Generators \uf0b7 Fuel tanks \uf0b7 Power cable channel covers \uf0b7 Exhaust pipes \uf0b7 Changeover racks \uf0b7 Generator room gate\n\uf0b7 Outdoor fans \uf0b7 CLS DC entrance gates \uf0b7 Staff housing containers \uf0b7 Main entrance gate\n\uf0b7 Office block air conditioning units \uf0b7 Office block entrance gate",
+      "notes": "The team has successfully completed the anti-corrosion painting works for the following assets and facilities:  Generators  Fuel tanks  Power cable channel covers  Exhaust pipes  Changeover racks  Generator room gate\n Outdoor fans  CLS DC entrance gates  Staff housing containers  Main entrance gate\n Office block air conditioning units  Office block entrance gate",
       "round": "First Half of 2026 anti-Corrossion Painting",
       "startDate": "2026-04-01",
       "id": "mujrapjjx0evw"
@@ -727,46 +727,68 @@
   ],
   "staff": [
     {
+      "name": "Abdulghani Saeed",
+      "order": 0,
+      "reportsTo": "",
+      "role": "Head of Technical",
+      "dept": "Technical",
+      "id": "s0"
+    },
+    {
       "name": "Mohamed Dahir Ali",
       "order": 1,
-      "reportsTo": "",
+      "reportsTo": "Abdulghani Saeed",
       "role": "CLS Manager",
-      "id": "s1"
+      "id": "s1",
+      "dept": "CLS Generators"
     },
     {
       "name": "Hussein Mohamed Salah",
       "order": 2,
       "reportsTo": "Mohamed Dahir Ali",
       "role": "Mechanic",
-      "id": "s2"
+      "id": "s2",
+      "dept": "CLS Generators"
     },
     {
       "name": "Mohamed Ibrahim Mohamed",
       "order": 3,
       "reportsTo": "Hussein Mohamed Salah",
       "role": "Gen Operator",
-      "id": "s3"
+      "id": "s3",
+      "dept": "CLS Generators"
     },
     {
       "name": "Mohamed Haji Mohamed",
       "order": 4,
       "reportsTo": "Hussein Mohamed Salah",
       "role": "Gen Operator",
-      "id": "s4"
+      "id": "s4",
+      "dept": "CLS Generators"
     },
     {
       "name": "Ahmed Hirsi Awal",
       "order": 5,
       "reportsTo": "Hussein Mohamed Salah",
       "role": "Gen Operator",
-      "id": "s5"
+      "id": "s5",
+      "dept": "CLS Generators"
     },
     {
       "name": "Nor Hussein Hassan",
       "order": 6,
       "reportsTo": "Hussein Mohamed Salah",
       "role": "Gen Operator",
-      "id": "s6"
+      "id": "s6",
+      "dept": "CLS Generators"
+    },
+    {
+      "name": "Network Manager (vacant)",
+      "order": 10,
+      "reportsTo": "Abdulghani Saeed",
+      "role": "Network Manager",
+      "dept": "Network and Upstream Internet",
+      "id": "s7"
     }
   ],
   "tasks": [
