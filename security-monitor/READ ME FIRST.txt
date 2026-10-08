@@ -1,0 +1,45 @@
+SECURITY MONITOR FOR WINDOWS
+============================
+
+SETUP
+1. Right-click the zip file > Extract All... and choose your Desktop.
+   You get a "Security Monitor" folder on your Desktop.
+2. Open the folder and double-click one of the files below.
+   Click "Yes" when Windows asks for administrator permission.
+   If a blue "Windows protected your PC" box appears: More info > Run anyway.
+
+WHAT EACH FILE DOES
+1 - Check my computer
+    Checks everything and opens a report in your browser that shows
+    a score out of 100 and a list of what to fix, worst problems first.
+2 - Update virus definitions and scan
+    Same check, but first updates Microsoft Defender and runs a
+    quick virus scan (takes a few minutes).
+3 - Keep watching (live alerts)
+    Stays open and checks every 5 minutes. A pop-up alert appears
+    in the corner of the screen when:
+      - a new device joins your Wi-Fi / network
+      - a program opens a new port to the network
+      - your router's address changes (possible interception)
+      - you join a different or open (no password) Wi-Fi
+      - Defender finds a virus
+      - someone keeps typing wrong passwords, or signs in by Remote Desktop
+    Alerts are also saved in data\watch-log.txt. Close the window to stop.
+
+WHAT IT CHECKS
+- Viruses & malware: antivirus on/off, definitions age, threats found,
+  scan exclusions, suspicious running programs, startup items and
+  scheduled tasks, hosts file, proxy settings.
+- Intruders & accounts: failed sign-ins, Remote Desktop sign-ins,
+  new user accounts, Guest account, administrators, live connections.
+- Open ports: every listening port, with the program behind it;
+  flags hacker back-door ports and remote-access ports.
+- Weak settings & updates: Windows version support, missing updates,
+  firewall, User Account Control, SMBv1, disk encryption, Secure Boot.
+- Wi-Fi & network: your Wi-Fi security (open/WEP/WPA), fake copies of
+  your network (evil twin), saved open networks, every device on your
+  network (new ones are flagged), router impersonation (ARP spoofing).
+
+The tool only reads information. It does not change or delete anything.
+Reports are saved in the "reports" folder; the newest one is also
+"Latest Security Report.html".
